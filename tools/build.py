@@ -11,13 +11,19 @@ from pathlib import Path
 
 BOOK = Path(__file__).resolve().parents[1]
 SITE = BOOK / '_site'
-langs = sys.argv[1:] or ['en', 'zh', 'de']
-env = dict(os.environ, PYTHONPATH=str(BOOK / 'GEMS_FEniCSx_OGS5_Template'))
+langs = sys.argv[1:] or [l for l in ('en', 'zh', 'de') if (BOOK / l / 'index.md').exists()]
+env = dict(os.environ)
 SITE.mkdir(exist_ok=True)
 for lang in langs:
     src = BOOK / lang
     shutil.copytree(BOOK / 'tools' / 'static', src / '_static', dirs_exist_ok=True)
+    if len(langs) == 1:   # one language only: no switcher (Jupyter Book loads every js in _static)
+        (src / '_static' / 'lang-switch.js').unlink(missing_ok=True)
     shutil.copytree(BOOK / 'figures', src / 'figures', dirs_exist_ok=True)
+    # the two browser tools are served as plain pages and embedded with <iframe>
+    (src / '_static' / 'tools').mkdir(parents=True, exist_ok=True)
+    for page in ('case_builder.html', 'gems_inspector.html'):
+        shutil.copy(BOOK / 'FEniCSx_GEMS' / page, src / '_static' / 'tools' / page)
     r = subprocess.run(['jupyter-book', 'build', '--all', str(src)], env=env, capture_output=True, text=True)
     for line in (r.stdout + r.stderr).splitlines():
         if ('WARNING' in line or 'ERROR' in line) and 'ParserConfig' not in line:

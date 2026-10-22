@@ -1,30 +1,52 @@
-# GEMS + FEniCSx：反应运移教程
+# FEniCSx + GEMS 反应运移
 
-这些页面用 **GEMS**（吉布斯自由能最小化算化学）和 **FEniCSx**（有限元算水流和输运）讲反应运移建模，
-以 **OpenGeoSys-GEM**（OGS5GEMDEV）的基准算例为例题。每篇教程用一个小的 Python 模板重建一个 OGS-GEM 算例，
-并和 OGS 原始输出比较。
+本站介绍一套把两个程序耦合起来的 Python 小代码：
 
-目标不只是把算例跑通，而是把耦合里的**每一条**规则弄明白——包括只写在 OGS 源代码里的那些——
-直到能自己搭模型。
+- **[FEniCSx](https://fenicsproject.org)**：在一维多孔介质柱中，通过扩散和对流移动溶解的元素；
+- **[GEMS3K](https://gems.web.psi.ch)**（通过 `xgems` 调用）：计算每个网格单元的局部化学平衡。
+
+一次模拟完全由 **一个输入文件 `case.yaml`** 描述。建立新问题时只改这个文件，Python 模块保持不变。
+
+```{image} figures/coupling_loop.png
+:alt: 一个时间步：coupling.py 读取 case.yaml，把水相量交给 transport.py，把总量交给 chemistry.py，再用 output.py 输出
+:width: 100%
+```
+
+## 快速上手
+
+```bash
+# 1. 准备含 FEniCSx、PETSc、GEMS3K、PyYAML 的环境（见“安装”）
+conda activate fenicsx
+
+# 2. 修改输入
+cd FEniCSx_GEMS
+nano case.yaml                  # 或使用浏览器里的 Case Builder
+
+# 3. 运行；结果写入 output.folder
+python coupling.py case.yaml
+```
+
+在 Windows + WSL 上，双击 `Run.cmd` 即完成第 3 步。
+
+## 网站结构
+
+| 部分 | 内容 |
+|---|---|
+| [安装](install.md) | 配置 Python 环境并检查 |
+| [耦合原理](coupling/overview.md) | 每个时间步四个模块交换什么、单位、守恒检查 |
+| [方程与数值方法](coupling/numerics.md) | 输运方程、离散方法、孔隙率和扩散系数反馈 |
+| [`case.yaml` 参考](yaml/index.md) | 四节中每个参数的含义、单位、默认值和示例 |
+| [浏览器工具](tools/case_builder.md) | 用表单生成 `case.yaml`；在浏览器中查看 GEMS 项目 |
+| [教程](tutorials/01_tracer_diffusion.ipynb) | 五个算例：从不含化学的示踪剂到带流动的方解石–白云石转化 |
+| [结果与排错](outputs.md) | 每个输出文件的内容；GEMS 不收敛时怎么办 |
+| [与 OGS-GEM 的验证](verification/index.md) | 用 FEniCSx 和 GEMS 复现的五个 OpenGeoSys-GEM 基准算例 |
 
 ## 学习路线
 
-| # | 教程 | 新内容 | 用时 |
-|---|---|---|---|
-| 1 | [HAYEKIT](tutorials/01_hayekit) | SNIA、动力学上下限、孔隙率反馈、解析解 | 3 分钟 |
-| 2 | [方解石柱](tutorials/02_calcite) | 对流、平衡前锋、OGS 的浓度 ↔ 质量换算 | 15 秒 |
-| 3 | [OPC 混凝土 + 石英](tutorials/03_opc_quartz) | 1 万年的慢动力学、约束、封闭体系 | 18 分钟 |
-| 4 | [comedy2d](tutorials/04_comedy2d) | 二维 Darcy 流、两个动力学相、子步、多余水源项 | 25 秒 |
-| 5 | [ConcreteCrack](tutorials/05_concretecrack) | 裂缝单元、FEM-FCT、Kozeny–Carman、复现到哪里为止 | 4 分钟 |
+1. [示踪剂扩散](tutorials/01_tracer_diffusion.ipynb)：`diffusion` 模式、解析解、质量守恒
+2. [单点化学平衡](tutorials/02_single_equilibrium.ipynb)：`chemistry` 模式、配方、相名称、Gibbs 能
+3. [NaCl 扩散](tutorials/03_nacl_diffusion.ipynb)：第一次 `coupled` 运行、两个分区
+4. [水泥溶蚀](tutorials/04_cement_leaching.ipynb)：孔隙率和扩散系数反馈
+5. [方解石 → 白云石](tutorials/05_calcite_dolomite.ipynb)：对流、入流和出流边界
 
-建议配合[概念篇](concepts/01_snia)一起读；每篇教程都链接到它用到的概念。
-
-## 需要什么
-
-- 模板文件夹 `GEMS_FEniCSx_OGS5_Template`（模块 + 所有算例数据）；
-- 装有 dolfinx 和 xgems 的 Python 环境，见[安装](setup)。
-
-## 致谢
-
-基准算例、输入文件和参考结果来自 **OGS5GEMDEV**（OpenGeoSys 5 与 GEMS3K 的耦合，主要由 PSI 的
-Georg Kosakowski 开发）。GEMS3K 和 xGEMS 由 GEMS 团队（Kulik 等）开发，FEniCSx 由 FEniCS 项目开发。见[参考文献](sources)。
+每篇教程都给出完整的 `case.yaml`、与上一篇相比改了哪些行、运行方法和结果。

@@ -1,4 +1,4 @@
-title: "GEMS + FEniCSx: reactive transport tutorials"
+title: "FEniCSx + GEMS reactive transport"
 author: ""
 copyright: ""
 only_build_toc_files: true
@@ -12,14 +12,12 @@ html:
   use_issues_button: false
   home_page_in_navbar: true
 sphinx:
-  extra_extensions: [sphinx.ext.autodoc, sphinx.ext.napoleon]
   config:
     language: en
+    myst_heading_anchors: 3
     mathjax_path: mathjax/tex-mml-chtml.js
     html_js_files: [lang-switch.js]
     html_css_files: [lang-switch.css]
     html_show_copyright: false
     html_last_updated_fmt: ""
-    autodoc_mock_imports: [xgems, dolfinx, ufl, basix, mpi4py, petsc4py]
-    autodoc_member_order: bysource
     suppress_warnings: ["myst.header", "mystnb.unknown_mime_type"]

@@ -1,32 +1,53 @@
-# GEMS + FEniCSx: Tutorials zum reaktiven Transport
+# FEniCSx + GEMS reaktiver Transport
 
-Diese Seiten vermitteln die Modellierung des reaktiven Transports mit **GEMS** (Minimierung der Gibbs-Energie
-für die Chemie) und **FEniCSx** (Finite Elemente für Strömung und Transport). Als Beispiele dienen Benchmarks
-von **OpenGeoSys-GEM** (OGS5GEMDEV). Jedes Tutorial baut einen OGS-GEM-Benchmark mit einer kleinen
-Python-Vorlage nach und vergleicht das Ergebnis mit der originalen OGS-Ausgabe.
+Diese Seiten erklären einen kleinen Python-Code, der zwei Programme koppelt:
 
-Ziel ist nicht nur, die Fälle laufen zu lassen, sondern *jede* Regel der Kopplung zu verstehen — auch
-diejenigen, die nur im OGS-Quellcode stehen — so gut, dass Sie eigene Modelle aufbauen können.
+- **[FEniCSx](https://fenicsproject.org)** transportiert gelöste Elemente durch Diffusion und Advektion durch eine eindimensionale poröse Säule;
+- **[GEMS3K](https://gems.web.psi.ch)**, über `xgems` aufgerufen, berechnet in jeder Zelle das lokale chemische Gleichgewicht.
+
+Eine ganze Simulation wird durch **eine Eingabedatei, `case.yaml`**, beschrieben. Für ein neues Problem ändern Sie nur diese Datei.
+Die Python-Module bleiben unverändert.
+
+```{image} figures/coupling_loop.png
+:alt: Ein Zeitschritt: coupling.py liest case.yaml, gibt die gelösten Mengen an transport.py und die Gesamtmengen an chemistry.py und schreibt den Zustand mit output.py
+:width: 100%
+```
+
+## Schnellstart
+
+```bash
+# 1. Umgebung mit FEniCSx, PETSc, GEMS3K und PyYAML (siehe Installation)
+conda activate fenicsx
+
+# 2. Eingabe bearbeiten
+cd FEniCSx_GEMS
+nano case.yaml                  # oder der Case Builder im Browser
+
+# 3. Rechnen; die Ergebnisse landen in output.folder
+python coupling.py case.yaml
+```
+
+Unter Windows mit WSL erledigt ein Doppelklick auf `Run.cmd` Schritt 3.
+
+## Aufbau der Seiten
+
+| Teil | Inhalt |
+|---|---|
+| [Installation](install.md) | Python-Umgebung einrichten und prüfen |
+| [Wie die Kopplung funktioniert](coupling/overview.md) | Was die vier Module in jedem Zeitschritt austauschen, Einheiten, Erhaltung |
+| [Gleichungen und Numerik](coupling/numerics.md) | Transportgleichung, Diskretisierung, Rückkopplung von Porosität und Diffusivität |
+| [`case.yaml`-Referenz](yaml/index.md) | Jeder Schlüssel der vier Abschnitte mit Einheit, Standardwert und Beispiel |
+| [Browser-Werkzeuge](tools/case_builder.md) | `case.yaml` über ein Formular erstellen; ein GEMS-Projekt im Browser ansehen |
+| [Tutorials](tutorials/01_tracer_diffusion.ipynb) | Fünf Fälle, vom Tracer ohne Chemie bis zur Calcit–Dolomit-Umwandlung mit Strömung |
+| [Ergebnisse und Fehlersuche](outputs.md) | Inhalt jeder Ausgabedatei; was tun, wenn GEMS nicht konvergiert |
+| [Verifikation mit OGS-GEM](verification/index.md) | Fünf OpenGeoSys-GEM-Benchmarks, mit FEniCSx und GEMS nachgerechnet |
 
 ## Lernpfad
 
-| # | Tutorial | neue Konzepte | Laufzeit |
-|---|---|---|---|
-| 1 | [HAYEKIT](tutorials/01_hayekit) | SNIA, kinetische Schranken, Porositätsrückkopplung, analytische Lösung | 3 min |
-| 2 | [Calcitsäule](tutorials/02_calcite) | Advektion, Gleichgewichtsfronten, OGS-Regeln Konzentration ↔ Masse | 15 s |
-| 3 | [OPC-Beton + Quarz](tutorials/03_opc_quartz) | 10 000 Jahre langsame Kinetik, Nebenbedingungen, geschlossenes System | 18 min |
-| 4 | [comedy2d](tutorials/04_comedy2d) | 2D-Darcy-Strömung, zwei kinetische Phasen, Teilschritte, Überschusswasser-Quelle | 25 s |
-| 5 | [ConcreteCrack](tutorials/05_concretecrack) | Risselemente, FEM-FCT, Kozeny–Carman, Grenzen der Reproduktion | 4 min |
+1. [Tracer-Diffusion](tutorials/01_tracer_diffusion.ipynb): Modus `diffusion`, analytische Lösung, Massenbilanz
+2. [Ein chemisches Gleichgewicht](tutorials/02_single_equilibrium.ipynb): Modus `chemistry`, Rezepte, Phasennamen, Gibbs-Energien
+3. [NaCl-Diffusion](tutorials/03_nacl_diffusion.ipynb): erster `coupled`-Lauf, zwei Zonen
+4. [Zementauslaugung](tutorials/04_cement_leaching.ipynb): Rückkopplung von Porosität und Diffusivität
+5. [Calcit → Dolomit](tutorials/05_calcite_dolomite.ipynb): Advektion, Zu- und Abflussränder
 
-Lesen Sie die [Konzeptseiten](concepts/01_snia) parallel; jedes Tutorial verweist auf die verwendeten Konzepte.
-
-## Was Sie brauchen
-
-- den Vorlagenordner `GEMS_FEniCSx_OGS5_Template` (Module + alle Falldaten),
-- eine Python-Umgebung mit dolfinx und xgems — siehe [Einrichtung](setup).
-
-## Danksagung
-
-Die Benchmarks, ihre Eingabedateien und Referenzergebnisse stammen aus **OGS5GEMDEV** (OpenGeoSys 5 gekoppelt
-mit GEMS3K, hauptsächlich entwickelt von Georg Kosakowski am PSI). GEMS3K und xGEMS werden vom GEMS-Team
-(Kulik et al.) entwickelt, FEniCSx vom FEniCS-Projekt. Siehe [Quellen](sources).
+Jedes Tutorial zeigt die vollständige `case.yaml`, die gegenüber dem vorherigen geänderten Zeilen, den Lauf und die Ergebnisse.

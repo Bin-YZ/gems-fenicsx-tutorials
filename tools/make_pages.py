@@ -1,24 +1,35 @@
-"""Write _config.yml, _toc.yml and all markdown pages of the three books (en, zh, de)."""
+"""Write _config.yml and _toc.yml for each language folder that exists (en first; zh, de follow)."""
 from pathlib import Path
-from pages_intro import INDEX, SETUP, API_HEAD, API_BODY, SOURCES
-from pages_concepts import CONCEPTS
 
 BOOK = Path(__file__).resolve().parents[1]
-TUTORIALS = ['01_hayekit', '02_calcite', '03_opc_quartz', '04_comedy2d', '05_concretecrack']
 META = {
-    'en': dict(title='GEMS + FEniCSx: reactive transport tutorials', sphinx_lang='en',
-               parts=['Getting started', 'Concepts', 'Tutorials', 'Reference']),
-    'zh': dict(title='GEMS + FEniCSx：反应运移教程', sphinx_lang='zh_CN',
-               parts=['入门', '概念', '教程', '参考']),
-    'de': dict(title='GEMS + FEniCSx: Tutorials zum reaktiven Transport', sphinx_lang='de',
-               parts=['Einstieg', 'Konzepte', 'Tutorials', 'Referenz']),
+    'en': dict(title='FEniCSx + GEMS reactive transport', sphinx_lang='en',
+               parts=['Getting started', 'How the coupling works', 'case.yaml reference', 'Browser tools',
+                      'Tutorials', 'Results', 'Verification', 'Reference']),
+    'zh': dict(title='FEniCSx + GEMS 反应运移', sphinx_lang='zh_CN',
+               parts=['入门', '耦合原理', 'case.yaml 参考', '浏览器工具', '教程', '结果', '验证', '参考']),
+    'de': dict(title='FEniCSx + GEMS reaktiver Transport', sphinx_lang='de',
+               parts=['Einstieg', 'Wie die Kopplung funktioniert', 'case.yaml-Referenz', 'Browser-Werkzeuge',
+                      'Tutorials', 'Ergebnisse', 'Verifikation', 'Referenz']),
 }
+CHAPTERS = [
+    ['install'],
+    ['coupling/overview', 'coupling/numerics'],
+    ['yaml/index', 'yaml/chemistry', 'yaml/transport', 'yaml/coupling_output', 'yaml/from_gems'],
+    ['tools/case_builder', 'tools/inspector'],
+    ['tutorials/01_tracer_diffusion', 'tutorials/02_single_equilibrium', 'tutorials/03_nacl_diffusion',
+     'tutorials/04_cement_leaching', 'tutorials/05_calcite_dolomite'],
+    ['outputs'],
+    ['verification/index', 'verification/01_hayekit', 'verification/02_calcite', 'verification/03_opc_quartz',
+     'verification/04_comedy2d', 'verification/05_concretecrack'],
+    ['sources'],
+]
+LANGS = [l for l in META if (BOOK / l / 'index.md').exists()]
 
-for lang, m in META.items():
-    d = BOOK / lang
-    (d / 'concepts').mkdir(parents=True, exist_ok=True)
-    (d / 'tutorials').mkdir(parents=True, exist_ok=True)
-    (d / '_config.yml').write_text(f"""title: "{m['title']}"
+for lang in LANGS:
+    m = META[lang]
+    switch = '[lang-switch.js]' if len(LANGS) > 1 else '[]'
+    (BOOK / lang / '_config.yml').write_text(f"""title: "{m['title']}"
 author: ""
 copyright: ""
 only_build_toc_files: true
@@ -32,38 +43,18 @@ html:
   use_issues_button: false
   home_page_in_navbar: true
 sphinx:
-  extra_extensions: [sphinx.ext.autodoc, sphinx.ext.napoleon]
   config:
     language: {m['sphinx_lang']}
+    myst_heading_anchors: 3
     mathjax_path: mathjax/tex-mml-chtml.js
-    html_js_files: [lang-switch.js]
+    html_js_files: {switch}
     html_css_files: [lang-switch.css]
     html_show_copyright: false
     html_last_updated_fmt: ""
-    autodoc_mock_imports: [xgems, dolfinx, ufl, basix, mpi4py, petsc4py]
-    autodoc_member_order: bysource
     suppress_warnings: ["myst.header", "mystnb.unknown_mime_type"]
 """)
-    p = m['parts']
-    (d / '_toc.yml').write_text(f"""format: jb-book
-root: index
-parts:
-  - caption: {p[0]}
-    chapters:
-      - file: setup
-  - caption: {p[1]}
-    chapters:
-""" + ''.join(f"      - file: concepts/{slug}\n" for slug, _ in CONCEPTS) + f"""  - caption: {p[2]}
-    chapters:
-""" + ''.join(f"      - file: tutorials/{t}\n" for t in TUTORIALS) + f"""  - caption: {p[3]}
-    chapters:
-      - file: api
-      - file: sources
-""")
-    (d / 'index.md').write_text(INDEX[lang].strip() + '\n')
-    (d / 'setup.md').write_text(SETUP[lang].strip() + '\n')
-    (d / 'api.md').write_text(API_HEAD[lang] + API_BODY)
-    (d / 'sources.md').write_text(SOURCES[lang].strip() + '\n')
-    for slug, text in CONCEPTS:
-        (d / 'concepts' / f'{slug}.md').write_text(text[lang].strip() + '\n')
-print('pages written')
+    toc = ['format: jb-book', 'root: index', 'parts:']
+    for caption, files in zip(m['parts'], CHAPTERS):
+        toc += [f'  - caption: "{caption}"', '    chapters:'] + [f'      - file: {f}' for f in files]
+    (BOOK / lang / '_toc.yml').write_text('\n'.join(toc) + '\n')
+print('pages:', LANGS)
