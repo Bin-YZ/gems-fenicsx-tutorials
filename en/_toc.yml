@@ -1,0 +1,25 @@
+format: jb-book
+root: index
+parts:
+  - caption: Getting started
+    chapters:
+      - file: setup
+  - caption: Concepts
+    chapters:
+      - file: concepts/01_snia
+      - file: concepts/02_components
+      - file: concepts/03_coupling
+      - file: concepts/04_kinetics
+      - file: concepts/05_transport
+      - file: concepts/06_flow_water
+  - caption: Tutorials
+    chapters:
+      - file: tutorials/01_hayekit
+      - file: tutorials/02_calcite
+      - file: tutorials/03_opc_quartz
+      - file: tutorials/04_comedy2d
+      - file: tutorials/05_concretecrack
+  - caption: Reference
+    chapters:
+      - file: api
+      - file: sources

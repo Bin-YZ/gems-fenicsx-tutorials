@@ -1,0 +1,57 @@
+<title>GEMS FEniCSx Tutorials</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,650&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+  /* layout: one narrow column — title, one-line purpose, three language entries, then the learning path as a ledger */
+  :root {
+    --bg: #f6f7f5; --surface: #ffffff; --fg: #1d2421; --muted: #5d6762; --line: #d9dfdb; --accent: #1f6f5c;
+    --display: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #121614; --surface: #1a201d; --fg: #e4ebe7; --muted: #9aa7a0; --line: #2d3632; --accent: #6cc3a8; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg: #121614; --surface: #1a201d; --fg: #e4ebe7; --muted: #9aa7a0; --line: #2d3632; --accent: #6cc3a8; color-scheme: dark; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+  main { max-width: 760px; margin: 0 auto; padding-block: 56px 72px;
+         padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  h1 { font-family: var(--display); font-weight: 650; font-size: clamp(30px, 6vw, 46px); line-height: 1.1; margin: 10px 0 14px; text-wrap: balance; }
+  .lede { color: var(--muted); max-width: 62ch; margin: 0 0 32px; }
+  .langs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 44px; }
+  .langs a { display: flex; flex-direction: column; gap: 2px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 8px;
+             background: var(--surface); color: var(--fg); text-decoration: none; }
+  .langs a:hover, .langs a:focus-visible { border-color: var(--accent); outline: none; }
+  .langs a.default { border-color: var(--accent); }
+  .langs strong { font-family: var(--display); font-size: 20px; font-weight: 500; }
+  .langs span { font-size: 13px; color: var(--muted); }
+  h2 { font-family: var(--display); font-weight: 500; font-size: 22px; margin: 0 0 10px; }
+  .path { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .path td { padding: 9px 8px 9px 0; border-top: 1px solid var(--line); vertical-align: top; }
+  .path td:first-child { font-family: var(--mono); color: var(--accent); width: 2.2em; }
+  .path td:last-child { font-family: var(--mono); color: var(--muted); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .path a { color: var(--fg); font-weight: 500; }
+  .note { margin-top: 28px; font-size: 13px; color: var(--muted); }
+  @media (max-width: 520px) { .langs { grid-template-columns: 1fr; } }
+</style>
+<main>
+  <div class="eyebrow">OpenGeoSys-GEM benchmarks · GEMS3K · FEniCSx</div>
+  <h1>GEMS + FEniCSx reactive transport tutorials</h1>
+  <p class="lede">Five OGS5-GEM benchmarks rebuilt with a small Python template, explained step by step and compared with the original OGS output — from a 2 mm diffusion column to a cracked concrete section.</p>
+  <nav class="langs" aria-label="Language">
+    <a class="default" href="en/index.html"><strong>English</strong><span>default</span></a>
+    <a href="zh/index.html"><strong>中文</strong><span>简体中文</span></a>
+    <a href="de/index.html"><strong>Deutsch</strong><span>German</span></a>
+  </nav>
+  <h2>Learning path</h2>
+  <table class="path">
+    <tr><td>1</td><td><a href="en/tutorials/01_hayekit.html">HAYEKIT</a> — kinetic limits, porosity feedback, analytical solution</td><td>3 min</td></tr>
+    <tr><td>2</td><td><a href="en/tutorials/02_calcite.html">Calcite column</a> — advection and equilibrium fronts</td><td>15 s</td></tr>
+    <tr><td>3</td><td><a href="en/tutorials/03_opc_quartz.html">OPC concrete + quartz</a> — 10 000 years of slow kinetics</td><td>18 min</td></tr>
+    <tr><td>4</td><td><a href="en/tutorials/04_comedy2d.html">comedy2d</a> — 2D Darcy flow, two kinetic phases</td><td>25 s</td></tr>
+    <tr><td>5</td><td><a href="en/tutorials/05_concretecrack.html">ConcreteCrack</a> — fracture elements, FEM-FCT</td><td>4 min</td></tr>
+  </table>
+  <p class="note">Runtimes are for one run of the tutorial notebook on two CPU cores. Preview of the first version; the same site is built for GitHub Pages.</p>
+</main>

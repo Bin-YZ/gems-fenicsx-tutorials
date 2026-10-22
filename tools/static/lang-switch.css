@@ -1,0 +1,5 @@
+.lang-switch { display: inline-flex; gap: 2px; margin-right: 10px; align-items: center; font-size: 0.85rem; }
+.lang-switch a { padding: 2px 8px; border-radius: 4px; text-decoration: none; color: var(--pst-color-text-muted); border: 1px solid transparent; }
+.lang-switch a:hover { border-color: var(--pst-color-border); }
+.lang-switch a.active { color: var(--pst-color-primary); border-color: var(--pst-color-primary); font-weight: 600; }
+.lang-switch.floating { position: fixed; top: 8px; right: 12px; z-index: 2000; background: var(--pst-color-background); padding: 4px; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,.15); }
