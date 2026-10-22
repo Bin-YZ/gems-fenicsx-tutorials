@@ -1,0 +1,9 @@
+_site/
+_build_src/
+*/_build/
+*/_static/
+*/figures/
+__pycache__/
+.ipynb_checkpoints/
+*.log
+ipmlog.txt
