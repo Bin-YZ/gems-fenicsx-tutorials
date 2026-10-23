@@ -1,31 +1,50 @@
 # FEniCSx + GEMS reactive transport tutorials
 
-网站地址：<https://bin-yz.github.io/gems-fenicsx-tutorials/>（英文 / 中文 / 德文）
+Website: <https://bin-yz.github.io/gems-fenicsx-tutorials/> (English / 中文 / Deutsch)
 
-内容：FEniCSx 与 GEMS 如何耦合、`case.yaml` 怎么写、五篇由浅入深的教程，以及与 OpenGeoSys-GEM 的五个验证算例。
+How a 1D FEniCSx transport solver and GEMS3K chemical equilibrium are coupled, how to write the `case.yaml` input file,
+five tutorials from tracer diffusion to calcite–dolomite conversion with advection, and five OpenGeoSys-GEM benchmarks
+reproduced as verification.
 
-## 仓库结构
+## Repository layout
 
 ```text
-FEniCSx_GEMS/                 耦合代码（coupling / transport / chemistry / output + case.yaml + 示例）
-GEMS_FEniCSx_OGS5_Template/   OGS-GEM 验证算例用的模板
-en/  zh/  de/                 三种语言的网页源文件（Markdown + 已执行的 notebook）
-figures/                      网页插图
-tools/                        生成教程、构建网站的脚本
-  tut_0*.py                   教程 notebook 的源（英文正文 + 代码）
-  i18n/*.py                   教程正文的中文、德文翻译
-  execute.sh                  生成 → 执行 → 分发到三种语言
-  make_pages.py, build.py     写 _config/_toc，构建 _site/
-.github/workflows/deploy.yml  推送到 main 后自动构建并发布到 GitHub Pages
+FEniCSx_GEMS/                 the coupling code (coupling / transport / chemistry / output), case.yaml and examples
+GEMS_FEniCSx_OGS5_Template/   template used for the OGS-GEM verification cases
+en/  zh/  de/                 page sources per language (Markdown + executed notebooks)
+figures/                      figures used on the pages
+tools/                        scripts that generate the tutorials and build the site
+  tut_0*.py                   tutorial notebook sources (English text + code)
+  i18n/*.py                   Chinese and German text of the tutorials
+  execute.sh                  generate -> execute -> copy into the three languages
+  make_pages.py, build.py     write _config.yml/_toc.yml and build _site/
+.github/workflows/deploy.yml  builds and publishes to GitHub Pages on every push to main
 ```
 
-## 修改与发布
+## Running the code
 
-- 改文字：直接编辑 `en/`、`zh/`、`de/` 下的 `.md`；教程正文改 `tools/tut_0*.py`（英文）和 `tools/i18n/`（中/德），然后
-  `cd tools && python3 tut_0X_*.py && python3 -c "from nb import localize; localize('0X_name')"`。
-- 重新计算教程（需要带 PETSc 的 dolfinx、xgems、pyyaml，并注册名为 `fx` 的 Jupyter kernel）：
-  `tools/execute.sh 03_nacl_diffusion tut_03_nacl demo_NaCl_diffusion`。
-- 本地预览：`pip install "jupyter-book<2"`，然后 `python tools/make_pages.py && python tools/build.py`，打开 `_site/index.html`。
-- 发布：推送到 `main` 即可（仓库 Settings → Pages → Source 选 GitHub Actions）。GitHub 上不重新执行 notebook，只渲染已保存的结果。
+Requirements (tested versions; see the Installation page for details): Python 3.12, fenics-dolfinx 0.10 with PETSc,
+xgems 2.1, pyyaml.
 
-OGS 输入文件和参考结果取自 OGS5GEMDEV，使用时请引用原始文献（见网站 Sources 页）。
+```bash
+conda create -n fenicsx -c conda-forge python=3.12 fenics-dolfinx=0.10 petsc4py mpich xgems=2.1 pyyaml pandas matplotlib scipy
+conda activate fenicsx
+cd FEniCSx_GEMS
+python coupling.py case.yaml
+```
+
+## Editing and publishing the site
+
+- **Text:** edit the `.md` files in `en/`, `zh/`, `de/`. Tutorial text lives in `tools/tut_0*.py` (English) and
+  `tools/i18n/` (Chinese, German); after editing run
+  `cd tools && python3 tut_0X_name.py && python3 -c "from nb import localize; localize('0X_name')"`.
+- **Re-run a tutorial** (needs the environment above, registered as Jupyter kernel `fx`):
+  `tools/execute.sh 03_nacl_diffusion tut_03_nacl demo_NaCl_diffusion`.
+- **Local preview:** `pip install "jupyter-book<2"`, then `python tools/make_pages.py && python tools/build.py` and open `_site/index.html`.
+- **Publish:** push to `main` (Settings → Pages → Source: GitHub Actions). The workflow only renders the stored notebook
+  outputs; it does not re-run the simulations.
+
+## Credits
+
+The OGS input files and reference results come from OGS5GEMDEV. Please cite the original work when you use them
+(see the Sources page of the website).

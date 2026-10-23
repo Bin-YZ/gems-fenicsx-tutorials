@@ -17,12 +17,35 @@ The code needs five Python packages:
 All packages are on conda-forge. Use [Miniforge](https://github.com/conda-forge/miniforge) and create one environment:
 
 ```bash
-conda create -n fenicsx -c conda-forge python=3.12 fenics-dolfinx petsc4py mpich xgems pyyaml pandas matplotlib jupyterlab
+conda create -n fenicsx -c conda-forge python=3.12 fenics-dolfinx=0.10 petsc4py mpich xgems=2.1 pyyaml pandas matplotlib scipy jupyterlab
 conda activate fenicsx
 ```
 
 FEniCSx does not run natively on Windows. Install WSL (`wsl --install` in an administrator PowerShell),
 open the Ubuntu terminal and run the two commands above there.
+
+## Tested versions
+
+The tutorials on this site were run with the conda-forge packages below (Linux, October 2026). Other versions may work, but
+dolfinx changes its Python API between minor releases (0.9 → 0.10), so keep **dolfinx 0.10.x** unless you are ready to adapt `transport.py`.
+
+| package | version |
+|---|---|
+| Python | 3.12.13 |
+| fenics-dolfinx | 0.10.0 (basix 0.10.0, ffcx 0.10.0, ufl 2025.2.1) |
+| PETSc / petsc4py | 3.25.6 |
+| mpi4py / mpich | 4.1.2 / 5.0.1 |
+| xgems (GEMS3K) | 2.1.2 |
+| pyyaml | 6.0.3 |
+| numpy | 2.5.4 |
+| pandas / matplotlib / scipy | 3.0.6 / 3.11.2 / 1.18.1 (tutorials only) |
+| jupyter-book | 1.0.4 (building this site only; version 2 is not compatible) |
+
+To check what you have:
+
+```bash
+conda list -n fenicsx | grep -E "dolfinx|petsc|xgems|pyyaml|numpy"
+```
 
 ## Get the code
 

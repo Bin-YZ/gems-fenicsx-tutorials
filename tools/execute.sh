@@ -6,7 +6,7 @@
 # Needs a Python with dolfinx (+PETSc), xgems and pyyaml (FX_BIN, registered as Jupyter kernel "fx").
 set -e
 BOOK=$(cd "$(dirname "$0")/.." && pwd)
-FX_BIN=${FX_BIN:-/home/claude/mm/root/envs/fx/bin}
+FX_BIN=${FX_BIN:-$CONDA_PREFIX/bin}
 cd "$BOOK/tools" && python3 "$2.py"
 RUN="$BOOK/_build_src"
 if [ -n "$3" ]; then
