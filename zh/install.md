@@ -17,11 +17,33 @@
 所有包都在 conda-forge 上。用 [Miniforge](https://github.com/conda-forge/miniforge) 建一个环境：
 
 ```bash
-conda create -n fenicsx -c conda-forge python=3.12 fenics-dolfinx petsc4py mpich xgems pyyaml pandas matplotlib jupyterlab
+conda create -n fenicsx -c conda-forge python=3.12 fenics-dolfinx=0.10 petsc4py mpich xgems=2.1 pyyaml pandas matplotlib scipy jupyterlab
 conda activate fenicsx
 ```
 
 FEniCSx 不能在 Windows 上原生运行。先安装 WSL（以管理员身份在 PowerShell 中运行 `wsl --install`），打开 Ubuntu 终端，再在其中执行上面两条命令。
+
+## 测试过的版本
+
+本站教程是用下面这些 conda-forge 包运行的（Linux，2026 年 10 月）。其他版本也可能可用，但 dolfinx 的 Python 接口在小版本之间会变化（0.9 → 0.10），因此除非你准备修改 `transport.py`，请使用 **dolfinx 0.10.x**。
+
+| 包 | 版本 |
+|---|---|
+| Python | 3.12.13 |
+| fenics-dolfinx | 0.10.0 (basix 0.10.0, ffcx 0.10.0, ufl 2025.2.1) |
+| PETSc / petsc4py | 3.25.6 |
+| mpi4py / mpich | 4.1.2 / 5.0.1 |
+| xgems (GEMS3K) | 2.1.2 |
+| pyyaml | 6.0.3 |
+| numpy | 2.5.4 |
+| pandas / matplotlib / scipy | 3.0.6 / 3.11.2 / 1.18.1 （仅教程使用） |
+| jupyter-book | 1.0.4 （仅用于构建本网站；不兼容 2.x） |
+
+查看已安装的版本：
+
+```bash
+conda list -n fenicsx | grep -E "dolfinx|petsc|xgems|pyyaml|numpy"
+```
 
 ## 获取代码
 
