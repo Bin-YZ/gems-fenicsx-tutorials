@@ -70,13 +70,6 @@ output:
   folder: results_noflux
 ```
 """, r"""
-## 自己试试
-
-1. 设 `cells: 10`，与 50 个单元的误差比较。
-2. 设 `dt: 1000`。向后欧拉仍然稳定，但误差有多大？
-3. 加第二个示踪剂：`components: [tracer, salt]`，并在 `initial` 和两侧边界的 `concentrations` 中给 `salt` 赋值。
-4. 试一个非法输入，例如在 diffusion 模式下设 `update_porosity: true`，读一读报错信息。
-
 **下一篇：** [教程 2](02_single_equilibrium.ipynb) 打开 GEMS，计算一次化学平衡。
 """]
 
@@ -158,12 +151,5 @@ output:
   folder: results_noflux
 ```
 """, r"""
-## Selbst ausprobieren
-
-1. `cells: 10` setzen und den Fehler mit dem 50-Zellen-Lauf vergleichen.
-2. `dt: 1000` setzen. Das Euler-Verfahren bleibt stabil, aber wie groß ist der Fehler jetzt?
-3. Einen zweiten Tracer hinzufügen: `components: [tracer, salt]`, und `salt` einen Wert in `initial` und in beiden Rand-`concentrations` geben.
-4. Eine ungültige Eingabe probieren, z. B. `update_porosity: true` im Modus diffusion, und die Fehlermeldung lesen.
-
 **Weiter:** [Tutorial 2](02_single_equilibrium.ipynb) schaltet GEMS ein und berechnet ein chemisches Gleichgewicht.
 """]

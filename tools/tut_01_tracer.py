@@ -209,14 +209,6 @@ ax.legend(); plt.tight_layout(); plt.show()
 """)
 
 nb.md(en=r"""
-## Try it yourself
-
-1. Set `cells: 10` and compare the error with the 50-cell run.
-2. Set `dt: 1000`. Backward Euler stays stable, but how large is the error now?
-3. Add a second tracer: `components: [tracer, salt]`, and give `salt` a value in `initial` and in
-   both boundary `concentrations`.
-4. Try an invalid input, for example `update_porosity: true` in diffusion mode, and read the error message.
-
 **Next:** [Tutorial 2](02_single_equilibrium.ipynb) switches on GEMS and computes one chemical equilibrium.
 """)
 nb.save('01_tracer_diffusion')

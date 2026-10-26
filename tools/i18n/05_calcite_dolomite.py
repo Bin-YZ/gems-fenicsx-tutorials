@@ -58,12 +58,6 @@ Mg 和 Cl 锋面、方解石溶解锋面以及白云石条带的位置都与已�
 """, r"""
 用 100 个单元时条带位置不变，只有边缘分布在几个粗单元上。平衡化学使矿物锋面保持陡峭，所以这里网格的影响比弥散估计的要小。其他问题中影响可能很大：要加密网格，直到结果不再变化。
 
-## 自己试试
-
-1. 把 `darcy_flux` 加倍（`De` 不变）。21 000 s 时条带走了多远？
-2. 打开 `update_porosity: true`。按每个 Ca+Mg 计，白云石的摩尔体积比方解石小。φ 会增大还是减小？
-3. 设 `dt: 100`，与 `dt: 200` 比较。
-
 现在你已经了解 `case.yaml` 的每一节。[参考页](../yaml/index.md) 列出了其余选项，例如用于难收敛化学的 `start: warm` 和 `on_failure: skip`。
 """]
 
@@ -135,12 +129,6 @@ $0{,}75\times10^{-9}$ m²/s, etwa 12 % von $D_e$; mit 100 Zellen wären es das 1
 """, r"""
 Mit 100 Zellen liegt das Band an derselben Stelle; nur seine Ränder verteilen sich über einige grobe Zellen. Gleichgewichtschemie hält die Mineralfronten scharf, deshalb spielt das
 Gitter hier eine kleinere Rolle, als die Dispersionsabschätzung vermuten lässt. Bei anderen Problemen kann es viel ausmachen: verfeinern, bis sich das Ergebnis nicht mehr ändert.
-
-## Selbst ausprobieren
-
-1. `darcy_flux` verdoppeln (`De` beibehalten). Wie weit kommt das Band in 21 000 s?
-2. `update_porosity: true` einschalten. Dolomit hat pro Ca+Mg ein kleineres Molvolumen als Calcit. Steigt φ oder sinkt es?
-3. `dt: 100` setzen und mit `dt: 200` vergleichen.
 
 Sie kennen jetzt jeden Abschnitt von `case.yaml`. Die [Referenzseiten](../yaml/index.md) nennen die übrigen Optionen, etwa `start: warm` und `on_failure: skip`
 für schwierige Chemie.

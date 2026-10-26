@@ -62,13 +62,6 @@ chemistry 模式下 `profiles.csv` 只有一行。单位：
 """, r"""
 除非有理由（例如复现已发表的基准算例）需要改动数据库，否则用 `gibbs: {}`。
 
-## 自己试试
-
-1. 把 `Silica-amorph` 从 `solid_phases` 中删去。输出的列有什么变化？
-2. 写一个项目中没有的元素，例如 `Mg: 0.1`，读一读报错信息。
-3. 设 `temperature: 323.15`（50 °C），比较 pH 和 portlandite。
-4. 在 [Case Builder](../tools/case_builder.md) 中试一个配方：它用表单生成同样的 YAML。
-
 **下一篇：** [教程 3](03_nacl_diffusion.ipynb) 用 `mode: coupled` 让两种 NaCl 溶液相互扩散：每一步都有输运和化学。
 """]
 
@@ -143,13 +136,6 @@ der pH fällt, und beim niedrigsten Ca/Si erscheint amorphes SiO₂. Ein gekoppe
 Dieses Beispiel verwendet die Werte des Benchmarks, aus dem es stammt. Ohne sie ergibt dasselbe Rezept eine andere Lösung:
 """, r"""
 Verwenden Sie `gibbs: {}`, außer Sie haben einen Grund, die Datenbank zu ändern, etwa einen veröffentlichten Benchmark nachzurechnen.
-
-## Selbst ausprobieren
-
-1. `Silica-amorph` aus `solid_phases` entfernen. Was ändert sich an den Ausgabespalten?
-2. Ein Element angeben, das nicht im Projekt ist, z. B. `Mg: 0.1`, und die Fehlermeldung lesen.
-3. `temperature: 323.15` (50 °C) setzen und pH und Portlandit vergleichen.
-4. Ein Rezept im [Case Builder](../tools/case_builder.md) ausprobieren: Er erzeugt dieselbe YAML aus einem Formular.
 
 **Weiter:** [Tutorial 3](03_nacl_diffusion.ipynb) lässt mit `mode: coupled` zwei NaCl-Lösungen ineinander diffundieren: Transport und Chemie in jedem Schritt.
 """]

@@ -60,12 +60,6 @@ $$
 """, r"""
 1 M 溶液每升含水略少于 0.5 M 溶液，因为盐占据了体积。H 和 O 的输运把这一差异连同盐一起带走。
 
-## 自己试试
-
-1. 给 `low` 分区不同的孔隙率，例如 `{name: low, from: 0.01, to: 0.02, phi: 0.3, De: 3.0e-10}`，观察剖面中的跳跃。
-2. 两侧用同一种溶液：`inlet: high`。右端会发生什么？
-3. 封闭右端（`type: no_flux`），运行到 `end: 100000`。剖面最终会变成什么样？
-
 **下一篇：** [教程 4](04_cement_leaching.ipynb) 加入矿物，它们会随溶液变化而溶解。
 """]
 
@@ -134,12 +128,6 @@ Er berechnet nur die Speziation der Lösung neu. Genau das ist der Zweck dieses 
 Jedes Element wird transportiert, auch H und O des Wassers. GEMS berechnet die Lösung in jeder Zelle neu, pH und Wassermenge folgen also aus den transportierten Gesamtmengen.
 """, r"""
 Die 1-M-Lösung enthält pro Liter etwas weniger Wasser als die 0,5-M-Lösung, weil das Salz Volumen einnimmt. Der Transport von H und O trägt diesen Unterschied mit dem Salz weiter.
-
-## Selbst ausprobieren
-
-1. Der Zone `low` eine andere Porosität geben, z. B. `{name: low, from: 0.01, to: 0.02, phi: 0.3, De: 3.0e-10}`, und den Sprung im Profil ansehen.
-2. Auf beiden Seiten dieselbe Lösung verwenden: `inlet: high`. Was geschieht am rechten Ende?
-3. Das rechte Ende schließen (`type: no_flux`) und bis `end: 100000` rechnen. Wo endet das Profil?
 
 **Weiter:** [Tutorial 4](04_cement_leaching.ipynb) fügt Minerale hinzu, die sich lösen, wenn sich die Lösung ändert.
 """]

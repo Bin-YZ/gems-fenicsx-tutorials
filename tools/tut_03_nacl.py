@@ -119,12 +119,6 @@ nb.md(en=r"""
 The 1 M solution holds slightly less water per litre than the 0.5 M solution, because the salt takes up volume. The transport of H and O carries this
 difference along with the salt.
 
-## Try it yourself
-
-1. Give the `low` zone a different porosity, e.g. `{name: low, from: 0.01, to: 0.02, phi: 0.3, De: 3.0e-10}`, and look at the jump in the profile.
-2. Use the same solution on both sides: `inlet: high`. What happens at the right end?
-3. Close the right end (`type: no_flux`) and run to `end: 100000`. Where does the profile end up?
-
 **Next:** [Tutorial 4](04_cement_leaching.ipynb) adds minerals, which dissolve as the solution changes.
 """)
 nb.save('03_nacl_diffusion')

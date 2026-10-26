@@ -195,13 +195,6 @@ for folder in ['results', 'results_no_gibbs']:
 nb.md(en=r"""
 Use `gibbs: {}` unless you have a reason, such as matching a published benchmark, to change the database.
 
-## Try it yourself
-
-1. Remove `Silica-amorph` from `solid_phases`. What changes in the output columns?
-2. Write an element that is not in the project, e.g. `Mg: 0.1`, and read the error message.
-3. Set `temperature: 323.15` (50 °C) and compare pH and portlandite.
-4. Try a recipe in [Case Builder](../tools/case_builder.md): it builds the same YAML from a form.
-
 **Next:** [Tutorial 3](03_nacl_diffusion.ipynb) lets two NaCl solutions diffuse into each other with `mode: coupled`: transport and chemistry in every step.
 """)
 nb.save('02_single_equilibrium')
