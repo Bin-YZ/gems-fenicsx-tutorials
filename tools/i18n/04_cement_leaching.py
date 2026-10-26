@@ -62,13 +62,6 @@ output:
 """, r"""
 溶解使表面附近的 φ 从 0.50 升到约 0.55，De 按 $(\phi/\phi_0)^2$ 增大约 20 %。这里对锋面的影响很小，而且与直觉相反：portlandite 锋面比性质不变时 *落后* 约 0.1 mm。portlandite 只占体积的百分之几，所以 φ 变化不大，而溶蚀区现在也容纳了更多孔隙水。这类效应应该通过计算来检查，而不是想当然。指数是模型选择，不是浆体本身的性质。
 
-## 自己试试
-
-1. 把 `dt` 减半，比较 1000 年时的锋面位置：时间步够小吗？
-2. 用 80 个单元代替 40 个。
-3. 把入口水改为纯水：从 `inlet` 中删去 Ca、Cl 和 Si（保留痕量 `1.0e-15`）。
-4. 在反馈算例中设 `exponent: 3.0`。
-
 **下一篇：** [教程 5](05_calcite_dolomite.ipynb) 加入流动。
 """]
 
@@ -144,13 +137,6 @@ output:
 Die Lösung erhöht φ nahe der Oberfläche von 0,50 auf etwa 0,55, und De steigt mit $(\phi/\phi_0)^2$ um etwa 20 %. Die Wirkung auf die Front ist hier klein und geht in die
 unerwartete Richtung: Die Portlanditfront liegt etwa 0,1 mm *hinter* dem Lauf mit konstanten Eigenschaften. Portlandit füllt nur wenige Prozent des Volumens, φ ändert sich also wenig,
 und die ausgelaugte Zone enthält nun auch mehr Porenwasser. Solche Effekte mit einem Lauf prüfen, statt sie anzunehmen. Der Exponent ist eine Modellannahme, keine Eigenschaft der Paste.
-
-## Selbst ausprobieren
-
-1. `dt` halbieren und die Frontlage nach 1000 Jahren vergleichen: Ist der Zeitschritt klein genug?
-2. 80 statt 40 Zellen verwenden.
-3. Das Zustromwasser durch reines Wasser ersetzen: Ca, Cl und Si aus `inlet` entfernen (Spuren `1.0e-15` behalten).
-4. Im Rückkopplungslauf `exponent: 3.0` setzen.
 
 **Weiter:** [Tutorial 5](05_calcite_dolomite.ipynb) fügt Strömung hinzu.
 """]

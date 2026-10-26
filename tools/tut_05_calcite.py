@@ -136,12 +136,6 @@ nb.md(en=r"""
 With 100 cells the band sits in the same place; only its edges are spread over a few coarse cells. Equilibrium chemistry keeps the mineral fronts sharp, so here the mesh
 matters less than the dispersion estimate suggests. For other problems it can matter a lot: refine until the result stops changing.
 
-## Try it yourself
-
-1. Double `darcy_flux` (and keep `De`). How far does the band get in 21 000 s?
-2. Switch on `update_porosity: true`. Dolomite has a smaller molar volume per Ca+Mg than calcite. Does φ go up or down?
-3. Set `dt: 100` and compare with `dt: 200`.
-
 You now know every section of `case.yaml`. The [reference pages](../yaml/index.md) list the remaining options, such as `start: warm`
 and `on_failure: skip` for difficult chemistry.
 """)

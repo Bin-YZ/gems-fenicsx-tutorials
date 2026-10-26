@@ -183,13 +183,6 @@ goes the other way from what one might guess: the portlandite front ends up abou
 of the volume, so φ changes little, and the leached zone now also holds more pore water. Check effects like this with a run rather than assuming them.
 The exponent is a model choice, not a property of the paste.
 
-## Try it yourself
-
-1. Halve `dt` and compare the front position at 1000 years: is the time step small enough?
-2. Use 80 cells instead of 40.
-3. Change the inlet to pure water: delete Ca, Cl and Si from `inlet` (keep trace amounts `1.0e-15`).
-4. Set `exponent: 3.0` in the feedback run.
-
 **Next:** [Tutorial 5](05_calcite_dolomite.ipynb) adds flow.
 """)
 nb.save('04_cement_leaching')
