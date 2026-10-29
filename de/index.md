@@ -36,6 +36,7 @@ Unter Windows mit WSL erledigt ein Doppelklick auf `Run.cmd` Schritt 3.
 | [Installation](install.md) | Python-Umgebung einrichten und prüfen |
 | [Wie die Kopplung funktioniert](coupling/overview.md) | Was die vier Module in jedem Zeitschritt austauschen, Einheiten, Erhaltung |
 | [Gleichungen und Numerik](coupling/numerics.md) | Transportgleichung, Diskretisierung, Rückkopplung von Porosität und Diffusivität |
+| [Rechnungen beschleunigen](coupling/performance.md) | Wo die Zeit bleibt, Prozesse vs. Threads, Arrays vs. Dictionaries |
 | [`case.yaml`-Referenz](yaml/index.md) | Jeder Schlüssel der vier Abschnitte mit Einheit, Standardwert und Beispiel |
 | [Browser-Werkzeuge](tools/case_builder.md) | `case.yaml` über ein Formular erstellen; ein GEMS-Projekt im Browser ansehen |
 | [Tutorials](tutorials/01_tracer_diffusion.ipynb) | Fünf Fälle, vom Tracer ohne Chemie bis zur Calcit–Dolomit-Umwandlung mit Strömung |

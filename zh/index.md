@@ -35,6 +35,7 @@ python coupling.py case.yaml
 | [安装](install.md) | 配置 Python 环境并检查 |
 | [耦合原理](coupling/overview.md) | 每个时间步四个模块交换什么、单位、守恒检查 |
 | [方程与数值方法](coupling/numerics.md) | 输运方程、离散方法、孔隙率和扩散系数反馈 |
+| [加快计算](coupling/performance.md) | 时间花在哪、进程与线程、数组与字典 |
 | [`case.yaml` 参考](yaml/index.md) | 四节中每个参数的含义、单位、默认值和示例 |
 | [浏览器工具](tools/case_builder.md) | 用表单生成 `case.yaml`；在浏览器中查看 GEMS 项目 |
 | [教程](tutorials/01_tracer_diffusion.ipynb) | 五个算例：从不含化学的示踪剂到带流动的方解石–白云石转化 |

@@ -14,7 +14,7 @@ META = {
 }
 CHAPTERS = [
     ['install'],
-    ['coupling/overview', 'coupling/numerics'],
+    ['coupling/overview', 'coupling/numerics', 'coupling/performance'],
     ['yaml/index', 'yaml/chemistry', 'yaml/transport', 'yaml/coupling_output', 'yaml/from_gems'],
     ['tools/case_builder', 'tools/inspector'],
     ['tutorials/01_tracer_diffusion', 'tutorials/02_single_equilibrium', 'tutorials/03_nacl_diffusion',
