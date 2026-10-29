@@ -8,6 +8,7 @@ parts:
     chapters:
       - file: coupling/overview
       - file: coupling/numerics
+      - file: coupling/performance
   - caption: "case.yaml 参考"
     chapters:
       - file: yaml/index

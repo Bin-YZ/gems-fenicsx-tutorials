@@ -36,6 +36,7 @@ On Windows with WSL, `Run.cmd` runs step 3 with a double-click.
 | [Installation](install.md) | Set up the Python environment and check it |
 | [How the coupling works](coupling/overview.md) | What the four modules exchange in every time step, units, conservation |
 | [Equations and numerics](coupling/numerics.md) | The transport equation, its discretisation, porosity and diffusivity feedback |
+| [Speeding up a run](coupling/performance.md) | Where the time goes, processes vs threads, arrays vs dictionaries |
 | [`case.yaml` reference](yaml/index.md) | Every key of the four sections, with units, defaults and examples |
 | [Browser tools](tools/case_builder.md) | Build a `case.yaml` from a form; inspect a GEMS project in the browser |
 | [Tutorials](tutorials/01_tracer_diffusion.ipynb) | Five cases, from a tracer without chemistry to calcite–dolomite conversion with flow |
