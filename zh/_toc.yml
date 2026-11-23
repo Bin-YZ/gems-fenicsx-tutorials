@@ -4,40 +4,60 @@ parts:
   - caption: "入门"
     chapters:
       - file: install
-  - caption: "耦合原理"
+        title: "安装"
+      - file: outputs
+        title: "输出文件与排错"
+  - caption: "原理"
     chapters:
       - file: coupling/overview
+        title: "耦合原理"
       - file: coupling/numerics
+        title: "方程与数值方法"
       - file: coupling/performance
-  - caption: "case.yaml 参考"
+        title: "加快计算"
+  - caption: "输入文件 case.yaml"
     chapters:
       - file: yaml/index
+        title: "概览"
       - file: yaml/chemistry
+        title: "chemistry"
       - file: yaml/transport
+        title: "transport"
       - file: yaml/coupling_output
+        title: "coupling 与 output"
       - file: yaml/from_gems
-  - caption: "浏览器工具"
-    chapters:
-      - file: tools/case_builder
-      - file: tools/inspector
+        title: "从 GEMS-Selektor 到配方"
   - caption: "教程"
     chapters:
       - file: tutorials/01_tracer_diffusion
+        title: "1 · 示踪剂扩散"
       - file: tutorials/02_single_equilibrium
+        title: "2 · 单点化学平衡"
       - file: tutorials/03_nacl_diffusion
+        title: "3 · NaCl 扩散"
       - file: tutorials/04_cement_leaching
+        title: "4 · 水泥溶蚀"
       - file: tutorials/05_calcite_dolomite
-  - caption: "结果"
-    chapters:
-      - file: outputs
-  - caption: "验证"
+        title: "5 · 方解石 → 白云石"
+  - caption: "与 OGS-GEM 对比验证"
     chapters:
       - file: verification/index
+        title: "概览"
       - file: verification/01_hayekit
+        title: "V1 · HAYEKIT"
       - file: verification/02_calcite
+        title: "V2 · 方解石柱"
       - file: verification/03_opc_quartz
+        title: "V3 · OPC 混凝土 + 石英"
       - file: verification/04_comedy2d
+        title: "V4 · comedy2d（二维流动）"
       - file: verification/05_concretecrack
-  - caption: "参考"
+        title: "V5 · ConcreteCrack"
+  - caption: "工具与参考"
     chapters:
+      - file: tools/case_builder
+        title: "Case Builder"
+      - file: tools/inspector
+        title: "GEMS Chemistry Inspector"
       - file: sources
+        title: "来源与致谢"

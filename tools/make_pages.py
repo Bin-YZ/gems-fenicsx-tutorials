@@ -2,28 +2,46 @@
 from pathlib import Path
 
 BOOK = Path(__file__).resolve().parents[1]
-META = {
-    'en': dict(title='FEniCSx + GEMS reactive transport', sphinx_lang='en',
-               parts=['Getting started', 'How the coupling works', 'case.yaml reference', 'Browser tools',
-                      'Tutorials', 'Results', 'Verification', 'Reference']),
-    'zh': dict(title='FEniCSx + GEMS 反应运移', sphinx_lang='zh_CN',
-               parts=['入门', '耦合原理', 'case.yaml 参考', '浏览器工具', '教程', '结果', '验证', '参考']),
-    'de': dict(title='FEniCSx + GEMS reaktiver Transport', sphinx_lang='de',
-               parts=['Einstieg', 'Wie die Kopplung funktioniert', 'case.yaml-Referenz', 'Browser-Werkzeuge',
-                      'Tutorials', 'Ergebnisse', 'Verifikation', 'Referenz']),
-}
-CHAPTERS = [
-    ['install'],
-    ['coupling/overview', 'coupling/numerics', 'coupling/performance'],
-    ['yaml/index', 'yaml/chemistry', 'yaml/transport', 'yaml/coupling_output', 'yaml/from_gems'],
-    ['tools/case_builder', 'tools/inspector'],
-    ['tutorials/01_tracer_diffusion', 'tutorials/02_single_equilibrium', 'tutorials/03_nacl_diffusion',
-     'tutorials/04_cement_leaching', 'tutorials/05_calcite_dolomite'],
-    ['outputs'],
-    ['verification/index', 'verification/01_hayekit', 'verification/02_calcite', 'verification/03_opc_quartz',
-     'verification/04_comedy2d', 'verification/05_concretecrack'],
-    ['sources'],
+# Sidebar: one part per caption, each entry (file, short title per language).
+# Short titles keep the sidebar to one line per page; the page itself keeps its full heading.
+NAV = [
+    (('Getting started', '入门', 'Einstieg'), [
+        ('install', 'Installation', '安装', 'Installation'),
+        ('outputs', 'Output files and troubleshooting', '输出文件与排错', 'Ausgabe und Fehlersuche')]),
+    (('Concepts', '原理', 'Grundlagen'), [
+        ('coupling/overview', 'How the coupling works', '耦合原理', 'Wie die Kopplung funktioniert'),
+        ('coupling/numerics', 'Equations and numerics', '方程与数值方法', 'Gleichungen und Numerik'),
+        ('coupling/performance', 'Speeding up a run', '加快计算', 'Rechnungen beschleunigen')]),
+    (('Input file: case.yaml', '输入文件 case.yaml', 'Eingabedatei case.yaml'), [
+        ('yaml/index', 'Overview', '概览', 'Überblick'),
+        ('yaml/chemistry', 'chemistry', 'chemistry', 'chemistry'),
+        ('yaml/transport', 'transport', 'transport', 'transport'),
+        ('yaml/coupling_output', 'coupling and output', 'coupling 与 output', 'coupling und output'),
+        ('yaml/from_gems', 'From GEMS-Selektor to a recipe', '从 GEMS-Selektor 到配方', 'Von GEMS-Selektor zum Rezept')]),
+    (('Tutorials', '教程', 'Tutorials'), [
+        ('tutorials/01_tracer_diffusion', '1 · Tracer diffusion', '1 · 示踪剂扩散', '1 · Tracer-Diffusion'),
+        ('tutorials/02_single_equilibrium', '2 · One chemical equilibrium', '2 · 单点化学平衡', '2 · Ein Gleichgewicht'),
+        ('tutorials/03_nacl_diffusion', '3 · NaCl diffusion', '3 · NaCl 扩散', '3 · NaCl-Diffusion'),
+        ('tutorials/04_cement_leaching', '4 · Cement leaching', '4 · 水泥溶蚀', '4 · Zementauslaugung'),
+        ('tutorials/05_calcite_dolomite', '5 · Calcite → dolomite', '5 · 方解石 → 白云石', '5 · Calcit → Dolomit')]),
+    (('Verification against OGS-GEM', '与 OGS-GEM 对比验证', 'Verifikation mit OGS-GEM'), [
+        ('verification/index', 'Overview', '概览', 'Überblick'),
+        ('verification/01_hayekit', 'V1 · HAYEKIT', 'V1 · HAYEKIT', 'V1 · HAYEKIT'),
+        ('verification/02_calcite', 'V2 · Calcite column', 'V2 · 方解石柱', 'V2 · Calcitsäule'),
+        ('verification/03_opc_quartz', 'V3 · OPC concrete + quartz', 'V3 · OPC 混凝土 + 石英', 'V3 · OPC-Beton + Quarz'),
+        ('verification/04_comedy2d', 'V4 · comedy2d (2D flow)', 'V4 · comedy2d（二维流动）', 'V4 · comedy2d (2D-Strömung)'),
+        ('verification/05_concretecrack', 'V5 · ConcreteCrack', 'V5 · ConcreteCrack', 'V5 · ConcreteCrack')]),
+    (('Tools and references', '工具与参考', 'Werkzeuge und Quellen'), [
+        ('tools/case_builder', 'Case Builder', 'Case Builder', 'Case Builder'),
+        ('tools/inspector', 'GEMS Chemistry Inspector', 'GEMS Chemistry Inspector', 'GEMS Chemistry Inspector'),
+        ('sources', 'Sources and credits', '来源与致谢', 'Quellen und Danksagung')]),
 ]
+COL = {'en': 1, 'zh': 2, 'de': 3}
+META = {
+    'en': dict(title='FEniCSx + GEMS reactive transport', sphinx_lang='en'),
+    'zh': dict(title='FEniCSx + GEMS 反应运移', sphinx_lang='zh_CN'),
+    'de': dict(title='FEniCSx + GEMS reaktiver Transport', sphinx_lang='de'),
+}
 LANGS = [l for l in META if (BOOK / l / 'index.md').exists()]
 
 for lang in LANGS:
@@ -54,7 +72,9 @@ sphinx:
     suppress_warnings: ["myst.header", "mystnb.unknown_mime_type"]
 """)
     toc = ['format: jb-book', 'root: index', 'parts:']
-    for caption, files in zip(m['parts'], CHAPTERS):
-        toc += [f'  - caption: "{caption}"', '    chapters:'] + [f'      - file: {f}' for f in files]
+    k = COL[lang]
+    for captions, entries in NAV:
+        toc += [f'  - caption: "{captions[k - 1]}"', '    chapters:']
+        toc += [f'      - file: {e[0]}\n        title: "{e[k]}"' for e in entries]
     (BOOK / lang / '_toc.yml').write_text('\n'.join(toc) + '\n')
 print('pages:', LANGS)

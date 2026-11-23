@@ -4,40 +4,60 @@ parts:
   - caption: "Einstieg"
     chapters:
       - file: install
-  - caption: "Wie die Kopplung funktioniert"
+        title: "Installation"
+      - file: outputs
+        title: "Ausgabe und Fehlersuche"
+  - caption: "Grundlagen"
     chapters:
       - file: coupling/overview
+        title: "Wie die Kopplung funktioniert"
       - file: coupling/numerics
+        title: "Gleichungen und Numerik"
       - file: coupling/performance
-  - caption: "case.yaml-Referenz"
+        title: "Rechnungen beschleunigen"
+  - caption: "Eingabedatei case.yaml"
     chapters:
       - file: yaml/index
+        title: "Überblick"
       - file: yaml/chemistry
+        title: "chemistry"
       - file: yaml/transport
+        title: "transport"
       - file: yaml/coupling_output
+        title: "coupling und output"
       - file: yaml/from_gems
-  - caption: "Browser-Werkzeuge"
-    chapters:
-      - file: tools/case_builder
-      - file: tools/inspector
+        title: "Von GEMS-Selektor zum Rezept"
   - caption: "Tutorials"
     chapters:
       - file: tutorials/01_tracer_diffusion
+        title: "1 · Tracer-Diffusion"
       - file: tutorials/02_single_equilibrium
+        title: "2 · Ein Gleichgewicht"
       - file: tutorials/03_nacl_diffusion
+        title: "3 · NaCl-Diffusion"
       - file: tutorials/04_cement_leaching
+        title: "4 · Zementauslaugung"
       - file: tutorials/05_calcite_dolomite
-  - caption: "Ergebnisse"
-    chapters:
-      - file: outputs
-  - caption: "Verifikation"
+        title: "5 · Calcit → Dolomit"
+  - caption: "Verifikation mit OGS-GEM"
     chapters:
       - file: verification/index
+        title: "Überblick"
       - file: verification/01_hayekit
+        title: "V1 · HAYEKIT"
       - file: verification/02_calcite
+        title: "V2 · Calcitsäule"
       - file: verification/03_opc_quartz
+        title: "V3 · OPC-Beton + Quarz"
       - file: verification/04_comedy2d
+        title: "V4 · comedy2d (2D-Strömung)"
       - file: verification/05_concretecrack
-  - caption: "Referenz"
+        title: "V5 · ConcreteCrack"
+  - caption: "Werkzeuge und Quellen"
     chapters:
+      - file: tools/case_builder
+        title: "Case Builder"
+      - file: tools/inspector
+        title: "GEMS Chemistry Inspector"
       - file: sources
+        title: "Quellen und Danksagung"
