@@ -211,7 +211,7 @@ def run(config):
             note = f'WARNING: {skipped} cell-steps were left unreacted because GEMS did not converge.'
             print(note, flush=True)
             output.log.write(note + '\n')
-        output.finish(state, diagnostics)
+        output.finish(state, diagnostics, skipped=skipped)
         return state, diagnostics
     except Exception:
         output.fail(traceback.format_exc())

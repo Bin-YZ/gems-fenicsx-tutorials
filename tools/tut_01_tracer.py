@@ -23,12 +23,13 @@ case also tells you whether FEniCSx is installed correctly.
 
 ## Folder layout
 
-This notebook sits next to the `FEniCSx_GEMS` folder. Each tutorial keeps its case in its own folder:
+The first code cell finds the `FEniCSx_GEMS` folder, wherever the notebook is opened inside the repository, and works in a
+folder `tutorial_runs/` next to it. Tutorials 1 and 2 keep their cases there:
 
 ```text
-FEniCSx_GEMS/          the four modules + chemistry_data/
-t01_tracer/case.yaml   written below
-t01_tracer/results/    created by the run
+FEniCSx_GEMS/                       the four modules + chemistry_data/
+tutorial_runs/t01_tracer/case.yaml  written below
+tutorial_runs/t01_tracer/results/   created by the run
 ```
 """)
 
@@ -42,8 +43,17 @@ The `%%writefile` line below writes the cell into a file. Outside a notebook you
 edit `case.yaml` in a text editor.
 """)
 nb.code(r"""
-import os
+import os, sys
+from pathlib import Path
+# Find the FEniCSx_GEMS folder, wherever this notebook is opened inside the repository
+here = Path.cwd()
+code = next(p / 'FEniCSx_GEMS' for p in [here, *here.parents] if (p / 'FEniCSx_GEMS' / 'coupling.py').exists())
+PY = sys.executable                         # the Python of this kernel runs coupling.py
+work = code.parent / 'tutorial_runs'       # tutorial cases go here, next to FEniCSx_GEMS
+work.mkdir(exist_ok=True)
+os.chdir(work)
 os.makedirs('t01_tracer', exist_ok=True)
+print('working in', work.name, 'next to', code.name)
 """)
 nb.code(r"""
 %%writefile t01_tracer/case.yaml
@@ -97,12 +107,11 @@ output:
 nb.md(en=r"""
 ## Run it
 
-From a terminal this is `python FEniCSx_GEMS/coupling.py t01_tracer/case.yaml`
-(on Windows: double-click `Run.cmd`, which calls the WSL Python). The `!` runs the same command
-from the notebook.
+From a terminal in `tutorial_runs/` this is `python ../FEniCSx_GEMS/coupling.py t01_tracer/case.yaml`.
+The `!{PY}` line runs the same command from the notebook, with the notebook's own Python.
 """)
 nb.code(r"""
-!python ../FEniCSx_GEMS/coupling.py t01_tracer/case.yaml
+!{PY} ../FEniCSx_GEMS/coupling.py t01_tracer/case.yaml
 """)
 
 nb.md(en=r"""
@@ -196,7 +205,7 @@ case['transport']['boundary']['right']['type'] = 'no_flux'
 case['coupling']['time']['end'] = 100000
 case['output']['folder'] = 'results_noflux'
 yaml.safe_dump(case, open('t01_tracer/case_noflux.yaml', 'w'), sort_keys=False)
-!python ../FEniCSx_GEMS/coupling.py t01_tracer/case_noflux.yaml > /dev/null && tail -n 1 t01_tracer/results_noflux/simulation.log
+!{PY} ../FEniCSx_GEMS/coupling.py t01_tracer/case_noflux.yaml > /dev/null && tail -n 1 t01_tracer/results_noflux/simulation.log
 """)
 nb.code(r"""
 q = pd.read_csv('t01_tracer/results_noflux/profiles.csv')

@@ -7,3 +7,7 @@ __pycache__/
 .ipynb_checkpoints/
 *.log
 ipmlog.txt
+# created when the tutorials are run
+tutorial_runs/
+FEniCSx_GEMS/example/*/results*/
+FEniCSx_GEMS/example/*/case_*.yaml

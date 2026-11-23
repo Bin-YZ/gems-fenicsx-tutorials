@@ -91,8 +91,11 @@ class Output:
         print(message, flush=True)
         self.log.write(message + '\n')
 
-    def finish(self, state, diagnostics):
-        """Finish tables before plotting, then mark the run as completed."""
+    def finish(self, state, diagnostics, skipped=0):
+        """Finish tables before plotting, then mark the run as completed.
+
+        skipped: number of cell-steps left unreacted (chemistry.on_failure: skip).
+        The status line then reads COMPLETED WITH SKIPPED CELLS."""
         self.profile_file.close()
         self.balance_file.close()
         if self.fields is not None:
@@ -100,7 +103,16 @@ class Output:
             self.fields = None
         plot_profiles(self.folder, self.names, self.phases)
         config = self.config
-        summary = f'''COMPLETED
+        status = 'COMPLETED' if not skipped else 'COMPLETED WITH SKIPPED CELLS'
+        mode = config['coupling']['mode']
+        if mode == 'diffusion':
+            gems_start = 'not used (diffusion mode)'
+        elif config['chemistry'].get('start', 'cold') == 'warm':
+            gems_start = 'warm start from each cell\'s previous equilibrium (cold-start fallback)'
+        else:
+            gems_start = 'independent cold start for every equilibrium call'
+        on_failure = config['chemistry'].get('on_failure', 'stop')
+        summary = f'''{status}
 Mode: {config['coupling']['mode']}
 Cells/states: {len(self.x)}; reference length: {config['transport']['geometry']['length']} m
 Scheme: backward Euler, DG0 two-point cell flux (transport modes only)
@@ -111,7 +123,8 @@ Inventory and boundary exchange: mol/m2 (unit cross-sectional area)
 Maximum balance error: {diagnostics['max_balance']:.6e} mol/m2
 Maximum chemical element reconstruction error: {diagnostics['max_chemistry']:.6e} mol/m3
 Maximum aqueous-volume/porosity mismatch: {diagnostics['max_water_mismatch']:.6%}
-GEMS initialisation: independent cold start for every equilibrium call
+GEMS initialisation: {gems_start}
+GEMS failures: on_failure = {on_failure}; cell-steps skipped (left unreacted): {skipped}
 Final porosity range: {state['phi'].min():.9g} to {state['phi'].max():.9g}
 Final De range: {state['De'].min():.9g} to {state['De'].max():.9g} m2/s
 Porosity feedback: {config['coupling']['update_porosity']}

@@ -57,8 +57,17 @@ The recipe is a hydrated cement paste: 1.119 mol Ca and 0.310 mol Si per dm³ of
 (pore water + solids), with 0.5 dm³ of water. The amounts are whole elements, not oxides. H and O include the water.
 """)
 nb.code(r"""
-import os
+import os, sys
+from pathlib import Path
+# Find the FEniCSx_GEMS folder, wherever this notebook is opened inside the repository
+here = Path.cwd()
+code = next(p / 'FEniCSx_GEMS' for p in [here, *here.parents] if (p / 'FEniCSx_GEMS' / 'coupling.py').exists())
+PY = sys.executable                         # the Python of this kernel runs coupling.py
+work = code.parent / 'tutorial_runs'       # tutorial cases go here, next to FEniCSx_GEMS
+work.mkdir(exist_ok=True)
+os.chdir(work)
 os.makedirs('t02_equilibrium', exist_ok=True)
+print('working in', work.name, 'next to', code.name)
 """)
 nb.code(r"""
 %%writefile t02_equilibrium/case.yaml
@@ -104,7 +113,7 @@ The `transport` and `coupling` blocks are written here in YAML's compact `{key: 
 exactly the same as the indented form in Tutorial 1.
 """)
 nb.code(r"""
-!python ../FEniCSx_GEMS/coupling.py t02_equilibrium/case.yaml 2>&1 | grep -v gems3k
+!{PY} ../FEniCSx_GEMS/coupling.py t02_equilibrium/case.yaml 2>&1 | grep -v gems3k
 """)
 
 nb.md(en=r"""
@@ -127,7 +136,7 @@ nb.md(en=r"""
 The paste is saturated with portlandite (pH ≈ 12.5). Most of the Si sits in C-S-H. Amorphous silica is not stable here.
 
 `summary.txt` also reports the **aqueous-volume/porosity mismatch**. GEMS computes the volume of the solution
-from its own data and compares it with `phi`. A few tenths of a percent is normal. A large value means the recipe's
+from its own data and compares it with `phi`. In the supplied examples it is a few tenths of a percent; that is an observation, not an acceptance threshold. A large value means the recipe's
 water content does not match the porosity you set in `transport.material`.
 """)
 nb.code(r"""
@@ -153,7 +162,7 @@ for Si in np.linspace(0.3, 2.4, 15):
     case['chemistry']['initial']['O'] = float(O_without_Si + 2 * Si)
     case['output']['folder'] = f'scan/Si_{Si:.2f}'
     yaml.safe_dump(case, open('t02_equilibrium/scan.yaml', 'w'), sort_keys=False)
-    subprocess.run(['python', '../FEniCSx_GEMS/coupling.py', 't02_equilibrium/scan.yaml'],
+    subprocess.run([PY, '../FEniCSx_GEMS/coupling.py', 't02_equilibrium/scan.yaml'],
                    check=True, capture_output=True)
     r = pd.read_csv(f't02_equilibrium/scan/Si_{Si:.2f}/profiles.csv').iloc[0]
     rows.append(dict(Ca_Si=1.119218076064 / Si, pH=r.pH, CSHQ=r.CSHQ_mol_m3_bulk,
@@ -187,7 +196,7 @@ case = yaml.safe_load(open('t02_equilibrium/case.yaml'))
 case['chemistry']['gibbs'] = {}
 case['output']['folder'] = 'results_no_gibbs'
 yaml.safe_dump(case, open('t02_equilibrium/no_gibbs.yaml', 'w'), sort_keys=False)
-subprocess.run(['python', '../FEniCSx_GEMS/coupling.py', 't02_equilibrium/no_gibbs.yaml'], check=True, capture_output=True)
+subprocess.run([PY, '../FEniCSx_GEMS/coupling.py', 't02_equilibrium/no_gibbs.yaml'], check=True, capture_output=True)
 for folder in ['results', 'results_no_gibbs']:
     r = pd.read_csv(f't02_equilibrium/{folder}/profiles.csv').iloc[0]
     print(f"{folder:17s} pH = {r.pH:.3f}   Ca = {r.Ca_c_mol_m3_water:.2f} mol/m3 water")

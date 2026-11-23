@@ -48,7 +48,7 @@ chemistry 模式下 `profiles.csv` 只有一行。单位：
 """, r"""
 浆体被 portlandite 饱和（pH ≈ 12.5）；大部分 Si 在 C-S-H 中，无定形硅在这里不稳定。
 
-`summary.txt` 还报告 **水相体积/孔隙率不匹配**：GEMS 用自己的数据计算溶液体积，并与 `phi` 比较。零点几个百分点属于正常；若数值很大，说明配方的含水量与 `transport.material` 中设置的孔隙率不一致。
+`summary.txt` 还报告 **水相体积/孔隙率不匹配**：GEMS 用自己的数据计算溶液体积，并与 `phi` 比较。所附算例中约为零点几个百分点，这是观察值，不是可接受阈值；若数值很大，说明配方的含水量与 `transport.material` 中设置的孔隙率不一致。
 """, r"""
 ## 扫描配方：从 portlandite 到二氧化硅
 
@@ -120,7 +120,7 @@ Im Modus chemistry hat `profiles.csv` genau eine Zeile. Einheiten:
 Die Paste ist mit Portlandit gesättigt (pH ≈ 12,5); der größte Teil des Si steckt in C-S-H, amorphes SiO₂ ist hier nicht stabil.
 
 `summary.txt` meldet auch die **Abweichung zwischen Lösungsvolumen und Porosität**: GEMS berechnet das Volumen der Lösung aus seinen eigenen Daten und vergleicht
-es mit `phi`. Einige Zehntelprozent sind normal; ein großer Wert bedeutet, dass der Wassergehalt des Rezepts nicht zur Porosität in `transport.material` passt.
+es mit `phi`. In den mitgelieferten Beispielen sind es einige Zehntelprozent; das ist eine Beobachtung, keine Akzeptanzschwelle. Ein großer Wert bedeutet, dass der Wassergehalt des Rezepts nicht zur Porosität in `transport.material` passt.
 """, r"""
 ## Das Rezept variieren: von Portlandit zu SiO₂
 

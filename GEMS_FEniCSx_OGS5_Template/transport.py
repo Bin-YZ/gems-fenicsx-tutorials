@@ -11,9 +11,11 @@
 
 Discretisation options, matching what the OGS cases use:
     lumped=True           row-sum (lumped) mass matrix
-    fct=True              FEM-FCT (Kuzmin linearised, Zalesak limiter) as OGS $FEM_FCT;
-                          fct_ogs_sign=True adds +f_ij to row j like OGS's AddFCT_CorrectionVector
-                          (the textbook scheme uses -f_ij)
+    fct=True              FEM-FCT (Kuzmin linearised, Zalesak limiter) as OGS $FEM_FCT.
+                          Default (fct_ogs_sign=False): the conservative textbook scheme, node j
+                          receives -f_ij. fct_ogs_sign=True copies OGS's AddFCT_CorrectionVector,
+                          which adds +f_ij to row j; this does NOT conserve mass and is only meant
+                          for bit-by-bit comparison with OGS (ConcreteCrack case).
     quadrature_degree     e.g. 5 for OGS's 3x3 Gauss points on quadrilaterals
 
 Interface used by reactive_transport.run():
@@ -31,7 +33,7 @@ from dolfinx import fem
 
 class Transport:
     def __init__(self, mesh, fixed_nodes=(), q=None, alpha_L=0.0, alpha_T=None, lumped=False,
-                 fct=False, fct_ogs_sign=True, quadrature_degree=None):
+                 fct=False, fct_ogs_sign=False, quadrature_degree=None):
         self.mesh = mesh
         self.fixed = mesh.node2dof[np.asarray(fixed_nodes, int)]        # dof numbers of Dirichlet nodes
         self.free = np.setdiff1d(np.arange(mesh.n_nodes), self.fixed)

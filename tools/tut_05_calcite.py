@@ -24,6 +24,13 @@ New in `case.yaml`:
 | Runtime | about 25 s |
 """)
 nb.code(r"""
+import os, sys
+from pathlib import Path
+# Find the FEniCSx_GEMS folder, wherever this notebook is opened inside the repository
+here = Path.cwd()
+code = next(p / 'FEniCSx_GEMS' for p in [here, *here.parents] if (p / 'FEniCSx_GEMS' / 'coupling.py').exists())
+PY = sys.executable                         # the Python of this kernel runs coupling.py
+os.chdir(code / 'example' / 'demo_calcite_dolomite')          # the case folder
 print(open('case.yaml').read())
 """)
 nb.md(en=r"""
@@ -58,7 +65,7 @@ nb.md(en=r"""
 ## Run
 """)
 nb.code(r"""
-!python ../../coupling.py case.yaml 2>&1 | grep -v gems3k | tail -n 2
+!{PY} ../../coupling.py case.yaml 2>&1 | grep -v gems3k | tail -n 2
 """)
 
 nb.md(en=r"""
@@ -122,7 +129,7 @@ case = yaml.safe_load(open('case.yaml'))
 case['transport']['geometry']['cells'] = 100
 case['output']['folder'] = 'results_100cells'
 yaml.safe_dump(case, open('case_100cells.yaml', 'w'), sort_keys=False)
-!python ../../coupling.py case_100cells.yaml 2>&1 | grep -v gems3k | tail -n 1
+!{PY} ../../coupling.py case_100cells.yaml 2>&1 | grep -v gems3k | tail -n 1
 
 c = pd.read_csv('results_100cells/profiles.csv'); c = c[c.time_s == c.time_s.max()].sort_values('x_m')
 fig, ax = plt.subplots(figsize=(6.5, 3.4))

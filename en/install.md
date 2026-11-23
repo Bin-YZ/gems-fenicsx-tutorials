@@ -1,6 +1,6 @@
 # Installation
 
-The code needs five Python packages:
+The code imports these Python packages:
 
 | package | used by | for |
 |---|---|---|
@@ -9,8 +9,9 @@ The code needs five Python packages:
 | `xgems` | `chemistry.py` | GEMS3K chemical equilibrium |
 | `pyyaml` | `coupling.py` | reading `case.yaml` |
 | `numpy` | all | arrays |
+| `pandas`, `matplotlib` | `output.py` | `profiles.png` at the end of every run; also used by the tutorial notebooks |
 
-`pandas` and `matplotlib` are only used by the tutorial notebooks.
+`scipy` is only used by the tutorial notebooks.
 
 ## Linux, macOS or Windows with WSL
 
@@ -60,6 +61,7 @@ FEniCSx_GEMS/
 ├── case.yaml          the input
 ├── chemistry_data/    the GEMS project used by case.yaml
 ├── example/           the cases of Tutorials 3 to 5
+├── Run.cmd            Windows: double-click to run case.yaml in WSL
 ├── case_builder.html  browser form that writes case.yaml
 └── gems_inspector.html browser viewer for GEMS projects
 ```
@@ -83,11 +85,13 @@ Together they test both halves.
 in the same folder:
 
 ```bat
-wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python coupling.py "%CASE_FILE%"           (FEniCSx_GEMS/Run.cmd)
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"     (example/*/Run.cmd)
 ```
 
 Change `/home/<user>/miniforge3/envs/fenicsx` to the path of your environment (`conda env list` shows it).
-`Run.cmd other.yaml` runs a different input file.
+`Run.cmd other.yaml` runs a different input file. There is one `Run.cmd` in `FEniCSx_GEMS/` for the default `case.yaml` and one in each
+folder under `example/`; all of them contain the same environment path, so change it in each file you use.
 
 ## Running more than one process
 

@@ -29,6 +29,8 @@ parts:
         title: "从 GEMS-Selektor 到配方"
   - caption: "教程"
     chapters:
+      - file: tutorials/index
+        title: "概览"
       - file: tutorials/01_tracer_diffusion
         title: "1 · 示踪剂扩散"
       - file: tutorials/02_single_equilibrium

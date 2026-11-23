@@ -4,11 +4,11 @@
 
 | file | written | content |
 |---|---|---|
-| `summary.txt` | start (RUNNING), end | **COMPLETED** or **FAILED**, mode, mesh, final time, largest balance / chemistry / water errors, φ and De ranges |
+| `summary.txt` | start (RUNNING), end | **COMPLETED**, **COMPLETED WITH SKIPPED CELLS** or **FAILED**, mode, mesh, GEMS start mode, number of skipped cell-steps, final time, largest balance / chemistry / water errors, φ and De ranges |
 | `profiles.csv` | every `output.every` steps and at the end | one row per cell and time (see below) |
 | `mass_balance.csv` | every step | per element: inventory, cumulative boundary input, balance error, chemistry error, water mismatch |
 | `profiles.png` | end | quick-look plot of the profiles |
-| `fields.xdmf` + `fields.h5` | with the profiles (not in chemistry mode) | the same fields for ParaView |
+| `fields.xdmf` + `fields.h5` | with the profiles (not in chemistry mode) | dissolved concentrations, φ, De and pH for ParaView (element totals and mineral amounts are only in `profiles.csv`) |
 | `simulation.log` | during the run | one progress line per saved step, warnings |
 | `case_used.json` | start | the settings actually used, with absolute paths |
 | `failure.txt` | only on failure | the Python traceback and the message |
@@ -35,7 +35,14 @@ Inventories in `mass_balance.csv` are in mol per m² of cross-section (amount ×
 
 ## When something goes wrong
 
-Every failure stops the run, writes `failure.txt` and marks `summary.txt` **FAILED**. The message names the cause:
+Every failure stops the run. Where the message appears depends on when it happens:
+
+- **Input checks** (`read_case`: the four sections, paths, numbers, mode and feedback switches) run before the output folder is created. These errors
+  appear only in the terminal; no `failure.txt` is written.
+- **Everything after start-up** (loading GEMS and the names in it, the initial equilibrium, every time step) writes `failure.txt` and marks `summary.txt`
+  **FAILED**.
+
+The message names the cause:
 
 | message | cause | what to do |
 |---|---|---|
@@ -58,10 +65,17 @@ In this order:
    and positive in the other is a common cause.
 3. Try `chemistry.start: warm`: each cell starts from its own previous equilibrium.
 4. Reduce `dt`, so that the composition changes less per step.
-5. As a last resort, use `chemistry.on_failure: skip`. Failing cells stay unreacted for that step and every skip is logged. Check how many were
-   skipped at the end of `simulation.log`.
+5. As a last resort, use `chemistry.on_failure: skip`. Failing cells stay unreacted for that step and every skip is logged in `simulation.log`.
+   The first line of `summary.txt` then reads **COMPLETED WITH SKIPPED CELLS** and gives the number of skipped cell-steps.
 
 ### Small differences between runs
 
-GEMS is sensitive to round-off: two runs whose inputs differ in the last digit can differ by about 1e-5 relative in pH or
-concentrations. Differences of that size are solver precision, not a change in the model.
+Two runs with nearly identical inputs can give slightly different results. In the tested examples, inputs that differed only in the last digit changed
+concentrations by up to about 1e-5 relative. This is not a general bound, and a difference of that size is not automatically harmless. Before you attribute a
+difference to round-off, check:
+
+- **convergence**: no GEMS failures or skipped cells in `simulation.log`, and the same phases present in both runs;
+- **element-balance residuals**: the *chemistry error* column of `mass_balance.csv` and the maximum in `summary.txt`;
+- **sensitivity**: whether the difference shrinks when `dt` or the mesh is refined, or grows near fronts where phases appear or disappear.
+
+Report pH differences as absolute values (pH units), not as relative errors.

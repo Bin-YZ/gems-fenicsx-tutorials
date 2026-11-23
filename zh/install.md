@@ -1,6 +1,6 @@
 # 安装
 
-代码需要以下 Python 包：
+代码会导入以下 Python 包：
 
 | 包 | 使用者 | 用途 |
 |---|---|---|
@@ -9,8 +9,9 @@
 | `xgems` | `chemistry.py` | GEMS3K 化学平衡 |
 | `pyyaml` | `coupling.py` | 读取 `case.yaml` |
 | `numpy` | 全部 | 数组 |
+| `pandas`、`matplotlib` | `output.py` | 每次运行结束时绘制 `profiles.png`；教程 notebook 也用到 |
 
-`pandas` 和 `matplotlib` 只在教程 notebook 中使用。
+`scipy` 只在教程 notebook 中使用。
 
 ## Linux、macOS 或 Windows（WSL）
 
@@ -58,6 +59,7 @@ FEniCSx_GEMS/
 ├── case.yaml          输入文件
 ├── chemistry_data/    case.yaml 使用的 GEMS 项目
 ├── example/           教程 3–5 的算例
+├── Run.cmd            Windows：双击即在 WSL 中运行 case.yaml
 ├── case_builder.html  生成 case.yaml 的浏览器表单
 └── gems_inspector.html 查看 GEMS 项目的浏览器工具
 ```
@@ -78,10 +80,11 @@ python -c "import dolfinx, xgems, yaml; print(dolfinx.__version__, dolfinx.has_p
 `Run.cmd` 直接调用环境中的 WSL Python，所以双击即可运行同一文件夹里的 `case.yaml`：
 
 ```bat
-wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python coupling.py "%CASE_FILE%"           (FEniCSx_GEMS/Run.cmd)
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"     (example/*/Run.cmd)
 ```
 
-把 `/home/<user>/miniforge3/envs/fenicsx` 改成你的环境路径（`conda env list` 可以查看）。`Run.cmd other.yaml` 运行另一个输入文件。
+把 `/home/<user>/miniforge3/envs/fenicsx` 改成你的环境路径（`conda env list` 可以查看）。`Run.cmd other.yaml` 运行另一个输入文件。`FEniCSx_GEMS/` 主目录里有一个 `Run.cmd`（运行默认的 `case.yaml`），`example/` 下每个算例文件夹里也各有一个；它们写的是同一个环境路径，用到哪个就改哪个。
 
 ## 多进程
 

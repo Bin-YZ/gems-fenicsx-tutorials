@@ -4,11 +4,11 @@
 
 | 文件 | 写入时机 | 内容 |
 |---|---|---|
-| `summary.txt` | 开始时（RUNNING）、结束时 | **COMPLETED** 或 **FAILED**、模式、网格、结束时间、最大守恒/化学/水量误差、φ 和 De 的范围 |
+| `summary.txt` | 开始时（RUNNING）、结束时 | **COMPLETED**、**COMPLETED WITH SKIPPED CELLS** 或 **FAILED**、模式、网格、GEMS 启动方式、跳过的单元步数、结束时间、最大守恒/化学/水量误差、φ 和 De 的范围 |
 | `profiles.csv` | 每 `output.every` 步及结束时 | 每个单元、每个时间一行（见下） |
 | `mass_balance.csv` | 每一步 | 每个元素的存量、累计边界输入、守恒误差、化学误差、水量差 |
 | `profiles.png` | 结束时 | 剖面速览图 |
-| `fields.xdmf` + `fields.h5` | 与剖面同时（chemistry 模式除外） | 同样的场，供 ParaView 使用 |
+| `fields.xdmf` + `fields.h5` | 与剖面同时（chemistry 模式除外） | 溶解浓度、φ、De 和 pH，供 ParaView 使用（元素总量和矿物量只在 `profiles.csv` 中） |
 | `simulation.log` | 运行中 | 每个保存步一行进度、警告 |
 | `case_used.json` | 开始时 | 实际使用的设置（绝对路径） |
 | `failure.txt` | 仅失败时 | Python 回溯和错误信息 |
@@ -35,7 +35,12 @@ last.plot(x='x_m', y=['Portlandite_mol_m3_bulk', 'CSHQ_mol_m3_bulk'])
 
 ## 出错时
 
-任何失败都会停止运行、写出 `failure.txt`，并把 `summary.txt` 标为 **FAILED**。错误信息指明原因：
+任何失败都会停止运行。错误信息出现在哪里取决于出错的时机：
+
+- **输入检查**（`read_case`：四个节、路径、数值、模式和反馈开关）在创建输出文件夹之前进行，这类错误只显示在终端里，不会写出 `failure.txt`。
+- **启动之后的所有错误**（加载 GEMS 及其中的名称、初始平衡、每个时间步）会写出 `failure.txt`，并把 `summary.txt` 标为 **FAILED**。
+
+错误信息指明原因：
 
 | 信息 | 原因 | 处理 |
 |---|---|---|
@@ -57,8 +62,14 @@ last.plot(x='x_m', y=['Portlandite_mol_m3_bulk', 'CSHQ_mol_m3_bulk'])
 2. 确保每个元素在 `initial` **和** `inlet` 中都至少有痕量（`1.0e-15`）。某元素在一处恰为 0、另一处为正，是常见原因。
 3. 试试 `chemistry.start: warm`：每个单元从自己上一次的平衡出发。
 4. 减小 `dt`，让每一步组成变化更小。
-5. 最后手段：`chemistry.on_failure: skip`。失败的单元在该步不反应，每次跳过都会记录；结束时查看 `simulation.log` 中跳过了多少次。
+5. 最后手段：`chemistry.on_failure: skip`。失败的单元在该步不反应，每次跳过都会记录在 `simulation.log` 中；`summary.txt` 第一行会变成 **COMPLETED WITH SKIPPED CELLS**，并写出跳过的单元步数。
 
 ### 两次运行的微小差异
 
-GEMS 对舍入误差敏感：输入只差最后一位的两次运行，pH 或浓度可能有约 1e-5 的相对差异。这种量级的差异是求解器精度，不代表模型变化。
+输入几乎相同的两次运行，结果可能略有不同。在已测试的算例中，输入只差最后一位时，浓度的相对变化最大约 1e-5。这不是普遍上限，这么大的差异也不一定无害。把差异归因于舍入误差之前，先检查：
+
+- **收敛情况**：`simulation.log` 中没有 GEMS 失败或跳过的单元，两次运行中出现的相相同；
+- **元素平衡残差**：`mass_balance.csv` 中的 *chemistry error* 列和 `summary.txt` 中的最大值；
+- **敏感性**：加密 `dt` 或网格时差异是否变小，在有相出现或消失的锋面附近是否变大。
+
+pH 的差异请报告绝对值（pH 单位），不要用相对误差。

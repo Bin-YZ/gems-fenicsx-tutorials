@@ -19,6 +19,7 @@ NAV = [
         ('yaml/coupling_output', 'coupling and output', 'coupling 与 output', 'coupling und output'),
         ('yaml/from_gems', 'From GEMS-Selektor to a recipe', '从 GEMS-Selektor 到配方', 'Von GEMS-Selektor zum Rezept')]),
     (('Tutorials', '教程', 'Tutorials'), [
+        ('tutorials/index', 'Overview', '概览', 'Überblick'),
         ('tutorials/01_tracer_diffusion', '1 · Tracer diffusion', '1 · 示踪剂扩散', '1 · Tracer-Diffusion'),
         ('tutorials/02_single_equilibrium', '2 · One chemical equilibrium', '2 · 单点化学平衡', '2 · Ein Gleichgewicht'),
         ('tutorials/03_nacl_diffusion', '3 · NaCl diffusion', '3 · NaCl 扩散', '3 · NaCl-Diffusion'),

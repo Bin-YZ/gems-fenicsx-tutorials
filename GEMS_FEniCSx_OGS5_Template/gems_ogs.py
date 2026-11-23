@@ -273,7 +273,8 @@ class OGSGEMS:
         pin = [self.species.index(s) for s in pin]
         for i in range(self.n):
             b = b_init[i].copy()
-            assert self._equilibrate(i, b, cold=True), f'initial GEMS run failed at node {i}: {self.status[i]}'
+            if not self._equilibrate(i, b, cold=True):
+                raise RuntimeError(f'initial GEMS run failed at node {i}: status {self.status[i]}')
             if normalize:
                 g = self._engine(i)
                 Vs = g.systemVolume()
@@ -283,18 +284,25 @@ class OGSGEMS:
                 b /= Vs
                 self.dll[i] /= Vs
                 self.dul[i] = np.where(self.dul[i] >= big, self.dul[i], self.dul[i] / Vs)
-                assert self._equilibrate(i, b, cold=True), f'second initial GEMS run failed at node {i}'
+                if not self._equilibrate(i, b, cold=True):
+                    raise RuntimeError(f'second initial GEMS run failed at node {i}: status {self.status[i]}')
             self.after_gems(i)
             self.mass_to_concentration(i)
         self.phi0 = self.phi.copy()
 
-    def init_from_restart(self, restart, c, nodes=None, update_porosity=False, pin_kinetic=False):
+    def init_from_restart(self, restart, c, nodes=None, update_porosity=False, pin_kinetic=False,
+                          on_failure='raise'):
         """Start from OGS restart files (ogs_io.read_restart) and the transport restart values c.
 
         For `nodes` (default all) one GEMS run with the stored limits follows
         (OGS Init with $RELOAD >= 2: no V_s normalisation; CalcPorosity only if
         update_porosity). pin_kinetic fixes the kinetic species to the new
-        amounts afterwards (SetLimitsInitial of the comedy-era code)."""
+        amounts afterwards (SetLimitsInitial of the comedy-era code).
+
+        A failed GEMS run is repeated once, as in OGS. If it fails again:
+        on_failure='raise' (default) stops; on_failure='continue' copies OGS, which keeps
+        going with that node's state. The failed nodes are then listed in
+        self.init_failed and printed, so the run does not hide them."""
         self.b_fix[:] = restart['b_fix']
         self.c[:] = c
         self.x[:] = restart['xDC']
@@ -302,16 +310,25 @@ class OGSGEMS:
         self.phi[:], self.Vf[:] = restart['porosity'], restart['fluid_volume']
         self.water[:] = restart['xDC'][:, self.s_water]
         self.phi0 = self.phi.copy()
+        if on_failure not in ('raise', 'continue'):
+            raise ValueError("on_failure must be 'raise' or 'continue'")
+        self.init_failed = []
         for i in (range(self.n) if nodes is None else nodes):
             b, _ = self.concentration_to_mass(i)
-            if not self._equilibrate(i, b, cold=True):
-                self._equilibrate(i, b, cold=True)        # OGS repeats a failed restart run once
+            # OGS repeats a failed restart run once
+            if not self._equilibrate(i, b, cold=True) and not self._equilibrate(i, b, cold=True):
+                if on_failure == 'raise':
+                    raise RuntimeError(f'GEMS run after restart failed twice at node {i}: status {self.status[i]}')
+                self.init_failed.append(i)
             if pin_kinetic:
                 xs = np.asarray(self._engine(i).speciesAmounts())
                 for j in self.kin_species:
                     self.dll[i, j] = self.dul[i, j] = max(xs[j], 0.0)
             self.after_gems(i, update_porosity)
             self.mass_to_concentration(i)
+        if self.init_failed:
+            print(f'WARNING: GEMS restart run failed twice at {len(self.init_failed)} node(s) {self.init_failed}; '
+                  "continuing with their state as OGS does (on_failure='continue')", flush=True)
 
     # ------------------------------------------------------------------ one time step
     def react(self, c_transport, dt):

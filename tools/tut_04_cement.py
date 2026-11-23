@@ -24,6 +24,13 @@ New in `case.yaml`:
 | Reference | HYDRUS profiles of the same benchmark, `Profile_HYDRUS.out` |
 """)
 nb.code(r"""
+import os, sys
+from pathlib import Path
+# Find the FEniCSx_GEMS folder, wherever this notebook is opened inside the repository
+here = Path.cwd()
+code = next(p / 'FEniCSx_GEMS' for p in [here, *here.parents] if (p / 'FEniCSx_GEMS' / 'coupling.py').exists())
+PY = sys.executable                         # the Python of this kernel runs coupling.py
+os.chdir(code / 'example' / 'demo_Cement_1D_benchmark')          # the case folder
 print(open('case.yaml').read())
 """)
 nb.md(en=r"""
@@ -41,7 +48,7 @@ Progress is printed every 1000 steps.
 nb.code(r"""
 import time
 t0 = time.time()
-!python ../../coupling.py case.yaml 2>&1 | grep -v gems3k | grep -E "step=.*000,|Saved"
+!{PY} ../../coupling.py case.yaml 2>&1 | grep -v gems3k | grep -E "step=.*000,|Saved"
 print(f'{(time.time() - t0) / 60:.1f} min')
 """)
 nb.code(r"""
@@ -160,7 +167,7 @@ case['coupling']['update_porosity'] = True
 case['coupling']['update_diffusivity'] = True
 case['output']['folder'] = 'results_feedback'
 yaml.safe_dump(case, open('case_feedback.yaml', 'w'), sort_keys=False)
-!python ../../coupling.py case_feedback.yaml 2>&1 | grep -v gems3k | grep -E "Saved"
+!{PY} ../../coupling.py case_feedback.yaml 2>&1 | grep -v gems3k | grep -E "Saved"
 """)
 nb.code(r"""
 q = pd.read_csv('results_feedback/profiles.csv'); q['t_yr'] = (q.time_s / YEAR).round(3)

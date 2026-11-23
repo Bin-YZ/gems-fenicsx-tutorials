@@ -25,6 +25,13 @@ nb.md(en=r"""
 ## The input file
 """)
 nb.code(r"""
+import os, sys
+from pathlib import Path
+# Find the FEniCSx_GEMS folder, wherever this notebook is opened inside the repository
+here = Path.cwd()
+code = next(p / 'FEniCSx_GEMS' for p in [here, *here.parents] if (p / 'FEniCSx_GEMS' / 'coupling.py').exists())
+PY = sys.executable                         # the Python of this kernel runs coupling.py
+os.chdir(code / 'example' / 'demo_NaCl_diffusion')          # the case folder
 print(open('case.yaml').read())
 """)
 nb.md(en=r"""
@@ -64,7 +71,7 @@ nb.md(en=r"""
 ## Run
 """)
 nb.code(r"""
-!python ../../coupling.py case.yaml 2>&1 | grep -v gems3k | tail -n 4
+!{PY} ../../coupling.py case.yaml 2>&1 | grep -v gems3k | tail -n 4
 """)
 
 nb.md(en=r"""

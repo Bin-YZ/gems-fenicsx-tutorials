@@ -98,7 +98,9 @@ Two further diagnostics are written every step, but they do not stop the run:
 
 - **chemistry error**: how well GEMS reproduces the element totals it was given (mol/m³);
 - **water mismatch**: relative difference between GEMS's aqueous-phase volume and φ. The transport assumes saturated pores
-  with volume φ. GEMS computes the solution volume from its own density model. A few tenths of a percent is normal.
+  with volume φ. GEMS computes the solution volume from its own density model. The supplied
+  examples show mismatches of a few tenths of a percent. That is an observation, not an acceptance threshold: the model does not correct the mismatch with
+  a water-flow calculation, so whether it is acceptable has to be judged for each application, for example with a sensitivity run.
 
 ## Three modes
 

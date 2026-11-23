@@ -2,7 +2,12 @@
 
 ## Transport equation
 
-For each transported element, with $c$ in mol/m³ pore water,
+The equation below is the **transport substep** of the operator splitting. During this substep reactions are excluded and porosity
+is held fixed. The full equation for a dissolved element also has a reaction source term $R$ (dissolution minus precipitation),
+$\partial(\phi c)/\partial t + \partial_x(qc - D_e\partial_x c) = R$. The code does not discretise $R$: the chemistry substep that follows
+replaces it by a local equilibrium in every cell ([how the coupling works](overview.md)).
+
+In the transport substep, for each transported element, with $c$ in mol/m³ pore water,
 
 $$
 \frac{\partial(\phi c)}{\partial t} + \frac{\partial}{\partial x}\!\left(q\,c - D_e \frac{\partial c}{\partial x}\right) = 0,
@@ -64,11 +69,14 @@ so concentrations are recalculated as $c = \text{aqueous}/\phi$.
 
 Operator splitting adds an error that grows with $\Delta t$, on top of the backward-Euler error.
 
-- **Diffusion-dominated:** the front moves about $\sqrt{D_p\,\Delta t}$ per step. Keep that well below the cell width $h$ if you
-  need sharp mineral fronts.
+- **Diffusion-dominated:** $\sqrt{D_p\,\Delta t}$ is the diffusion length of one step. It is a length scale, not the distance a mineral front moves
+  per step, which also depends on how much mineral has to dissolve or precipitate. If $\sqrt{D_p\,\Delta t}$ is much larger than the cell width $h$,
+  concentration gradients change a lot within one step and splitting errors grow.
 - **Advection-dominated:** keep the Courant number $q\,\Delta t / (\phi h)$ around 1 or below. Backward Euler stays stable at larger values,
   but fronts are smeared further.
-- **Check by halving.** Run again with half the `dt` (and twice the `cells`) and compare the profiles.
+- **Check time and space separately.** On a fine mesh, run with `dt`, `dt/2` and `dt/4` until the profiles stop changing. Then, with that time step,
+  refine `cells` until the profiles stop changing again. Halving `dt` and doubling `cells` at the same time only shows the combined effect and
+  cannot tell which error dominates.
 
 ## Chemistry: cold and warm starts
 
@@ -80,5 +88,7 @@ again at a scaled size (×1, ×10, ×100, ×0.1, ×0.01) and scaled back. Equili
 for large systems. If a warm start fails, the cell is re-solved at its previous composition and moved to the new one in four warm
 steps before falling back to cold starts.
 
-GEMS results depend on floating-point round-off at the level of about 1e-5 relative. Two runs with inputs that differ in the last digit
-can show differences of that size. This is solver precision, not a bug.
+GEMS results are not exactly reproducible at the level of round-off. In the tested examples, two runs whose inputs differed only in
+the last digit gave relative differences of up to about 1e-5 in concentrations. This is an observation for these examples, not a general bound: the size
+depends on the system, the solver tolerances, and whether phases appear or disappear. See
+[small differences between runs](../outputs.md) for how to judge such differences.

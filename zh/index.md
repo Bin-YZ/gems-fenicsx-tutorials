@@ -2,10 +2,10 @@
 
 本站介绍一套把两个程序耦合起来的 Python 小代码：
 
-- **[FEniCSx](https://fenicsproject.org)**：在一维多孔介质柱中，通过扩散和对流移动溶解的元素；
+- **[FEniCSx](https://fenicsproject.org)**：在一维多孔介质柱中，求解溶解元素总量的输运方程（扩散和对流）；
 - **[GEMS3K](https://gems.web.psi.ch)**（通过 `xgems` 调用）：计算每个网格单元的局部化学平衡。
 
-一次模拟完全由 **一个输入文件 `case.yaml`** 描述。建立新问题时只改这个文件，Python 模块保持不变。
+一次模拟完全由 **一个输入文件 `case.yaml`** 描述。建立新问题时只改这个文件。在支持的范围内（一维、饱和、局部平衡、所有元素共用一个扩散系数），不需要修改 Python 模块。
 
 ```{image} figures/coupling_loop.png
 :alt: 一个时间步：coupling.py 读取 case.yaml，把水相量交给 transport.py，把总量交给 chemistry.py，再用 output.py 输出
@@ -38,7 +38,7 @@ python coupling.py case.yaml
 | [加快计算](coupling/performance.md) | 时间花在哪、进程与线程、数组与字典 |
 | [`case.yaml` 参考](yaml/index.md) | 四节中每个参数的含义、单位、默认值和示例 |
 | [浏览器工具](tools/case_builder.md) | 用表单生成 `case.yaml`；在浏览器中查看 GEMS 项目 |
-| [教程](tutorials/01_tracer_diffusion.ipynb) | 五个算例：从不含化学的示踪剂到带流动的方解石–白云石转化 |
+| [教程](tutorials/index.md) | 五个算例：从不含化学的示踪剂到带流动的方解石–白云石转化 |
 | [结果与排错](outputs.md) | 每个输出文件的内容；GEMS 不收敛时怎么办 |
 | [与 OGS-GEM 的验证](verification/index.md) | 用 FEniCSx 和 GEMS 复现的五个 OpenGeoSys-GEM 基准算例 |
 

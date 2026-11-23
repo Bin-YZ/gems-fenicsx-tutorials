@@ -2,11 +2,12 @@
 
 Diese Seiten erklären einen kleinen Python-Code, der zwei Programme koppelt:
 
-- **[FEniCSx](https://fenicsproject.org)** transportiert gelöste Elemente durch Diffusion und Advektion durch eine eindimensionale poröse Säule;
+- **[FEniCSx](https://fenicsproject.org)** löst die Transportgleichungen für die gelösten Elementmengen in einer eindimensionalen porösen Säule (Diffusion und Advektion);
 - **[GEMS3K](https://gems.web.psi.ch)**, über `xgems` aufgerufen, berechnet in jeder Zelle das lokale chemische Gleichgewicht.
 
 Eine ganze Simulation wird durch **eine Eingabedatei, `case.yaml`**, beschrieben. Für ein neues Problem ändern Sie nur diese Datei.
-Die Python-Module bleiben unverändert.
+Innerhalb des unterstützten Bereichs (1D, gesättigt, lokales Gleichgewicht, ein Diffusionskoeffizient für alle Elemente)
+müssen die Python-Module nicht geändert werden.
 
 ```{image} figures/coupling_loop.png
 :alt: Ein Zeitschritt: coupling.py liest case.yaml, gibt die gelösten Mengen an transport.py und die Gesamtmengen an chemistry.py und schreibt den Zustand mit output.py
@@ -39,7 +40,7 @@ Unter Windows mit WSL erledigt ein Doppelklick auf `Run.cmd` Schritt 3.
 | [Rechnungen beschleunigen](coupling/performance.md) | Wo die Zeit bleibt, Prozesse vs. Threads, Arrays vs. Dictionaries |
 | [`case.yaml`-Referenz](yaml/index.md) | Jeder Schlüssel der vier Abschnitte mit Einheit, Standardwert und Beispiel |
 | [Browser-Werkzeuge](tools/case_builder.md) | `case.yaml` über ein Formular erstellen; ein GEMS-Projekt im Browser ansehen |
-| [Tutorials](tutorials/01_tracer_diffusion.ipynb) | Fünf Fälle, vom Tracer ohne Chemie bis zur Calcit–Dolomit-Umwandlung mit Strömung |
+| [Tutorials](tutorials/index.md) | Fünf Fälle, vom Tracer ohne Chemie bis zur Calcit–Dolomit-Umwandlung mit Strömung |
 | [Ergebnisse und Fehlersuche](outputs.md) | Inhalt jeder Ausgabedatei; was tun, wenn GEMS nicht konvergiert |
 | [Verifikation mit OGS-GEM](verification/index.md) | Fünf OpenGeoSys-GEM-Benchmarks, mit FEniCSx und GEMS nachgerechnet |
 

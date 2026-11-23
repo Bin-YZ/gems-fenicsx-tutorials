@@ -96,7 +96,9 @@ Zwei weitere Diagnosen werden in jedem Schritt geschrieben, beenden den Lauf abe
 
 - **chemistry error**: wie genau GEMS die vorgegebenen Elementmengen reproduziert (mol/m³);
 - **water mismatch**: relative Differenz zwischen dem Volumen der wässrigen Phase in GEMS und φ. Der Transport nimmt gesättigte Poren mit dem
-  Volumen φ an. GEMS berechnet das Lösungsvolumen mit seinem eigenen Dichtemodell. Einige Zehntelprozent sind normal.
+  Volumen φ an. GEMS berechnet das Lösungsvolumen mit seinem eigenen Dichtemodell. Die
+  mitgelieferten Beispiele zeigen Abweichungen von einigen Zehntelprozent. Das ist eine Beobachtung, keine Akzeptanzschwelle: Das Modell gleicht die Abweichung
+  nicht durch eine Wasserströmungsrechnung aus; ob sie akzeptabel ist, muss für jede Anwendung beurteilt werden, etwa mit einem Sensitivitätslauf.
 
 ## Drei Modi
 

@@ -19,12 +19,12 @@ ZH = [r"""
 
 ## 文件夹结构
 
-本 notebook 放在 `FEniCSx_GEMS` 文件夹旁边，每篇教程的算例放在自己的文件夹中：
+第一个代码单元会自动找到 `FEniCSx_GEMS` 文件夹（无论 notebook 在仓库中的哪个位置打开），并在它旁边的 `tutorial_runs/` 文件夹中工作。教程 1 和 2 的算例都放在那里：
 
 ```text
-FEniCSx_GEMS/          四个模块 + chemistry_data/
-t01_tracer/case.yaml   下面写出
-t01_tracer/results/    运行时创建
+FEniCSx_GEMS/                       四个模块 + chemistry_data/
+tutorial_runs/t01_tracer/case.yaml  下面写出
+tutorial_runs/t01_tracer/results/   运行时创建
 ```
 """, r"""
 ## 写输入文件
@@ -35,7 +35,7 @@ t01_tracer/results/    运行时创建
 """, r"""
 ## 运行
 
-在终端中就是 `python FEniCSx_GEMS/coupling.py t01_tracer/case.yaml`（Windows 上双击 `Run.cmd`，它调用 WSL 中的 Python）。`!` 在 notebook 中运行同一条命令。
+在 `tutorial_runs/` 目录的终端中就是 `python ../FEniCSx_GEMS/coupling.py t01_tracer/case.yaml`。`!{PY}` 这一行用 notebook 自己的 Python 运行同一条命令。
 """, r"""
 ## 运行写出了什么
 
@@ -94,12 +94,13 @@ DE = [r"""
 
 ## Ordnerstruktur
 
-Dieses Notebook liegt neben dem Ordner `FEniCSx_GEMS`. Jedes Tutorial hat seinen Fall in einem eigenen Ordner:
+Die erste Codezelle findet den Ordner `FEniCSx_GEMS`, egal wo im Repository das Notebook geöffnet wird, und arbeitet in einem Ordner
+`tutorial_runs/` daneben. Die Tutorials 1 und 2 legen ihre Fälle dort ab:
 
 ```text
-FEniCSx_GEMS/          die vier Module + chemistry_data/
-t01_tracer/case.yaml   wird unten geschrieben
-t01_tracer/results/    entsteht beim Lauf
+FEniCSx_GEMS/                       die vier Module + chemistry_data/
+tutorial_runs/t01_tracer/case.yaml  wird unten geschrieben
+tutorial_runs/t01_tracer/results/   entsteht beim Lauf
 ```
 """, r"""
 ## Die Eingabedatei schreiben
@@ -111,8 +112,8 @@ Die Zeile `%%writefile` unten schreibt die Zelle in eine Datei. Außerhalb eines
 """, r"""
 ## Rechnen
 
-Im Terminal lautet der Befehl `python FEniCSx_GEMS/coupling.py t01_tracer/case.yaml` (unter Windows: Doppelklick auf `Run.cmd`, das das WSL-Python aufruft).
-Das `!` führt denselben Befehl im Notebook aus.
+Im Terminal in `tutorial_runs/` lautet der Befehl `python ../FEniCSx_GEMS/coupling.py t01_tracer/case.yaml`.
+Die Zeile `!{PY}` führt denselben Befehl im Notebook aus, mit dem Python des Notebooks.
 """, r"""
 ## Was der Lauf geschrieben hat
 

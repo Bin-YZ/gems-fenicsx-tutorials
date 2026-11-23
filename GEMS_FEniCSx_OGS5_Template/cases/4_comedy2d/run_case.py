@@ -80,7 +80,11 @@ def run_comedy(limits):
                    limits=limits, seed_omega=1.1, seed_needs_rate=True, check_lower_limits=True,
                    substep_kinetics=True, retry_perturb=1e-12, boundary_nodes=inlets)
     restart = read_restart(OGS / 'cement2d', mesh.n_nodes, chem.nIC, chem.nDC)
-    chem.init_from_restart(restart, restart['solute'], update_porosity=False, pin_kinetic=True)
+    # Five nodes (1065, 1067, 1171, 1177, 1183) fail twice in the restart run; OGS keeps going there,
+    # so the reproduction does too
+    # (the nodes are reported). New cases should keep the default on_failure='raise'.
+    chem.init_from_restart(restart, restart['solute'], update_porosity=False, pin_kinetic=True,
+                           on_failure='continue')
 
     def prepare(step, t, dt):
         tr.phi_cell = chem.phi[mesh.cells].mean(1)

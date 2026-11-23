@@ -29,6 +29,8 @@ parts:
         title: "Von GEMS-Selektor zum Rezept"
   - caption: "Tutorials"
     chapters:
+      - file: tutorials/index
+        title: "Überblick"
       - file: tutorials/01_tracer_diffusion
         title: "1 · Tracer-Diffusion"
       - file: tutorials/02_single_equilibrium

@@ -1,6 +1,6 @@
 # Installation
 
-Der Code braucht folgende Python-Pakete:
+Der Code importiert folgende Python-Pakete:
 
 | Paket | verwendet von | für |
 |---|---|---|
@@ -9,8 +9,9 @@ Der Code braucht folgende Python-Pakete:
 | `xgems` | `chemistry.py` | chemisches Gleichgewicht mit GEMS3K |
 | `pyyaml` | `coupling.py` | Lesen von `case.yaml` |
 | `numpy` | alle | Arrays |
+| `pandas`, `matplotlib` | `output.py` | `profiles.png` am Ende jedes Laufs; auch in den Tutorial-Notebooks |
 
-`pandas` und `matplotlib` werden nur in den Tutorial-Notebooks verwendet.
+`scipy` wird nur in den Tutorial-Notebooks verwendet.
 
 ## Linux, macOS oder Windows mit WSL
 
@@ -60,6 +61,7 @@ FEniCSx_GEMS/
 ├── case.yaml          die Eingabe
 ├── chemistry_data/    das GEMS-Projekt von case.yaml
 ├── example/           die Fälle der Tutorials 3 bis 5
+├── Run.cmd            Windows: Doppelklick rechnet case.yaml in WSL
 ├── case_builder.html  Browser-Formular, das case.yaml schreibt
 └── gems_inspector.html Browser-Ansicht für GEMS-Projekte
 ```
@@ -82,10 +84,12 @@ Zusammen prüfen sie beide Hälften.
 `Run.cmd` ruft das WSL-Python der Umgebung direkt auf. Ein Doppelklick rechnet also die `case.yaml` im selben Ordner:
 
 ```bat
-wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python coupling.py "%CASE_FILE%"           (FEniCSx_GEMS/Run.cmd)
+wsl /home/<user>/miniforge3/envs/fenicsx/bin/python ../../coupling.py "%CASE_FILE%"     (example/*/Run.cmd)
 ```
 
-Ersetzen Sie `/home/<user>/miniforge3/envs/fenicsx` durch den Pfad Ihrer Umgebung (`conda env list` zeigt ihn). `Run.cmd other.yaml` rechnet eine andere Eingabedatei.
+Ersetzen Sie `/home/<user>/miniforge3/envs/fenicsx` durch den Pfad Ihrer Umgebung (`conda env list` zeigt ihn). `Run.cmd other.yaml` rechnet eine andere Eingabedatei. Es gibt ein `Run.cmd` in `FEniCSx_GEMS/` für die Standard-`case.yaml` und eines in jedem
+Ordner unter `example/`; alle enthalten denselben Umgebungspfad, ändern Sie ihn in jeder Datei, die Sie verwenden.
 
 ## Mehrere Prozesse
 

@@ -2,7 +2,12 @@
 
 ## Transportgleichung
 
-Für jedes transportierte Element, mit $c$ in mol/m³ Porenwasser:
+Die Gleichung unten ist der **Transportteilschritt** des Operator-Splittings. In diesem Teilschritt werden Reaktionen ausgeschlossen und die Porosität
+festgehalten. Die vollständige Gleichung für ein gelöstes Element enthält zusätzlich einen Reaktionsquellterm $R$ (Lösung minus Fällung),
+$\partial(\phi c)/\partial t + \partial_x(qc - D_e\partial_x c) = R$. Der Code diskretisiert $R$ nicht direkt: Der folgende Chemieteilschritt ersetzt ihn
+durch ein lokales Gleichgewicht in jeder Zelle ([wie die Kopplung funktioniert](overview.md)).
+
+Im Transportteilschritt gilt für jedes transportierte Element, mit $c$ in mol/m³ Porenwasser:
 
 $$
 \frac{\partial(\phi c)}{\partial t} + \frac{\partial}{\partial x}\!\left(q\,c - D_e \frac{\partial c}{\partial x}\right) = 0,
@@ -62,11 +67,14 @@ erhalten; die Konzentrationen werden als $c = \text{aqueous}/\phi$ neu berechnet
 
 Operator-Splitting fügt zum Fehler des Euler-Verfahrens einen weiteren hinzu, der mit $\Delta t$ wächst.
 
-- **Diffusionsdominiert:** Die Front wandert pro Schritt etwa $\sqrt{D_p\,\Delta t}$. Für scharfe Mineralfronten sollte das deutlich kleiner als die
-  Zellbreite $h$ sein.
+- **Diffusionsdominiert:** $\sqrt{D_p\,\Delta t}$ ist die Diffusionslänge eines Schritts. Sie ist eine Längenskala, nicht die Strecke, um die eine
+  Mineralfront pro Schritt wandert; diese hängt auch davon ab, wie viel Mineral gelöst oder gefällt werden muss. Ist $\sqrt{D_p\,\Delta t}$ viel größer als
+  die Zellbreite $h$, ändern sich die Gradienten innerhalb eines Schritts stark, und die Splitting-Fehler wachsen.
 - **Advektionsdominiert:** Die Courant-Zahl $q\,\Delta t / (\phi h)$ um 1 oder darunter halten. Das Euler-Verfahren bleibt auch darüber stabil,
   aber die Fronten werden breiter.
-- **Durch Halbieren prüfen.** Mit halbem `dt` (und doppelten `cells`) noch einmal rechnen und die Profile vergleichen.
+- **Zeit und Ort getrennt prüfen.** Auf einem feinen Gitter mit `dt`, `dt/2` und `dt/4` rechnen, bis sich die Profile nicht mehr ändern. Dann mit diesem
+  Zeitschritt `cells` verfeinern, bis sich die Profile wieder nicht mehr ändern. Gleichzeitiges Halbieren von `dt` und Verdoppeln von `cells` zeigt nur
+  die kombinierte Wirkung und trennt die beiden Fehler nicht.
 
 ## Chemie: Kalt- und Warmstart
 
@@ -78,5 +86,7 @@ gelöst (×1, ×10, ×100, ×0,1, ×0,01) und zurückskaliert, denn das Gleichge
 robuster. Scheitert ein Warmstart, wird die Zelle zuerst bei ihrer vorherigen Zusammensetzung neu gelöst und in vier Warmstart-Schritten zur neuen
 geführt, bevor auf Kaltstarts zurückgegriffen wird.
 
-GEMS-Ergebnisse hängen auf einem Niveau von etwa 1e-5 relativ von Rundungsfehlern ab. Zwei Läufe mit Eingaben, die sich in der letzten Stelle
-unterscheiden, können so weit voneinander abweichen. Das ist Löser-Genauigkeit, kein Fehler.
+GEMS-Ergebnisse sind auf dem Niveau von Rundungsfehlern nicht exakt reproduzierbar. In den getesteten Beispielen ergaben zwei Läufe, deren Eingaben sich nur
+in der letzten Stelle unterschieden, relative Abweichungen der Konzentrationen bis etwa 1e-5. Das ist eine Beobachtung für diese Beispiele, keine allgemeine
+Schranke: Die Größe hängt vom System, den Lösertoleranzen und davon ab, ob Phasen erscheinen oder verschwinden. Wie man solche Unterschiede beurteilt, steht unter
+[kleine Unterschiede zwischen Läufen](../outputs.md).
