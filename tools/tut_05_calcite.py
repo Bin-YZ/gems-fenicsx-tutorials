@@ -4,23 +4,43 @@ nb = NB()
 nb.md(en=r"""
 # 5. Calcite → dolomite with advection
 
-**Goal.** Add flow. An MgCl₂ solution is pumped into a 0.5 m column of calcite. Calcite dissolves, the released carbonate meets Mg, and
-**dolomite** precipitates in a band that travels down the column and dissolves again behind it. This benchmark is used to compare
-reactive transport codes ([doi:10.1007/s10596-019-09919-3](https://doi.org/10.1007/s10596-019-09919-3), section 4.4, Fig. 6).
+**Question.** How does the code handle flow, and does it reproduce a published reactive-transport benchmark in which minerals dissolve
+and precipitate in moving fronts?
 
-New in `case.yaml`:
+## The physical problem
 
-- **`transport.material.darcy_flux`**: advection towards $+x$;
-- **an `outflow` boundary** on the right, where water leaves with the composition of the last cell;
-- **a fine mesh**, because the upwind scheme smears fronts;
-- **a GEMS project whose independent components are not all elements** (no `O`);
-- a recipe obtained by scaling a GEMS state to φ = 0.32 ([how](../yaml/from_gems.md)).
+A 0.5 m column of porous material containing a small amount of calcite, its pore water in equilibrium with the calcite. From $t = 0$ a
+1 mM MgCl₂ solution is pumped in at the left end at a constant rate (pore velocity about 0.8 m/day), and water leaves at the right end.
+As the MgCl₂ water advances:
+
+- calcite dissolves, releasing Ca and carbonate;
+- the carbonate meets Mg, and **dolomite** precipitates in a band;
+- behind the band the incoming water is undersaturated with dolomite, which dissolves again, so the band moves down the column.
+
+This is a standard benchmark for reactive transport codes ([doi:10.1007/s10596-019-09919-3](https://doi.org/10.1007/s10596-019-09919-3), section 4.4, Fig. 6).
+
+## Model assumptions
+
+- saturated flow at a constant Darcy flux; φ and the dispersion coefficient stay constant (no feedback);
+- dispersion and diffusion lumped into one coefficient, the same for all elements;
+- local equilibrium in every cell at every step (no kinetics);
+- the inflowing water never changes; at the outlet water leaves with the composition of the last cell (no diffusive flux across it).
+
+## From assumptions to `case.yaml`
+
+| assumption | key in `case.yaml` |
+|---|---|
+| constant Darcy flux towards +x | `material.darcy_flux: 3.0e-06` |
+| dispersion + diffusion | `material.De: 6.432e-09` (= φ × benchmark $D$) |
+| inflowing MgCl₂ water | `chemistry.inlet`, left boundary `dirichlet` |
+| outflow at the right end | right boundary `outflow` |
+| calcite column at φ = 0.32 | `chemistry.initial` (a GEMS state scaled to φ = 0.32, [how](../yaml/from_gems.md)), `material.phi: 0.32` |
+| constant φ and De | `update_porosity: false`, `update_diffusivity: false` |
 
 | | |
 |---|---|
-| Mode | `coupled` |
 | Case folder | `FEniCSx_GEMS/example/demo_calcite_dolomite` (this notebook runs there) |
-| Domain | 0.5 m, 1000 cells, 105 steps of 200 s |
+| Domain | 0.5 m, 1000 cells, 105 steps of 200 s (21 000 s) |
 | Runtime | about 25 s |
 """)
 nb.code(r"""
@@ -99,7 +119,10 @@ print(f'calcite plateau {(s.Calcite_mol_m3_bulk / phi).max():.4f} mol/m3 water')
 print(f'dolomite peak   {dol.max():.4f} mol/m3 water, band {band.min():.3f}-{band.max():.3f} m')
 """)
 nb.md(en=r"""
-The positions of the Mg and Cl fronts, the calcite dissolution front and the dolomite band match the published figure.
+**How to read this.** The positions of the Mg and Cl fronts, the calcite dissolution front and the dolomite band agree with the published
+figure when the two are compared by eye; the published curves are only available as an image, so no error is computed. Things to check in
+your own run: Cl does not react, so its front marks how far the inflowing water has travelled ($v t \approx 0.2$ m); the calcite plateau
+ahead of the front should stay at its initial value (0.206 mol/m³ water here); and the mass balance in `summary.txt` should close.
 
 ## How the band moves
 """)
@@ -140,8 +163,16 @@ ax.set(xlabel='distance (m)', ylabel='mol/m³ water', title='t = 21 000 s'); ax.
 plt.tight_layout(); plt.show()
 """)
 nb.md(en=r"""
-With 100 cells the band sits in the same place; only its edges are spread over a few coarse cells. Equilibrium chemistry keeps the mineral fronts sharp, so here the mesh
-matters less than the dispersion estimate suggests. For other problems it can matter a lot: refine until the result stops changing.
+**How to read this.** With 100 cells the band sits in the same place; only its edges are spread over a few coarse cells. A likely reason is that
+equilibrium chemistry keeps mineral fronts sharp, so here the mesh matters less than the dispersion estimate suggests. This is an observation
+for this case only; for other problems the mesh can matter a lot, so refine until the result stops changing.
+
+## What this tutorial shows
+
+- Advection with `darcy_flux`, an `outflow` boundary and equilibrium chemistry reproduce the moving dissolution front and dolomite band of the
+  benchmark, compared visually with the published figure.
+- A GEMS project can use independent components other than elements (here no O); recipes use whatever names the project lists.
+- Upwind transport adds numerical dispersion of about $qh/2$; how much it matters has to be checked by refining the mesh.
 
 You now know every section of `case.yaml`. The [reference pages](../yaml/index.md) list the remaining options, such as `start: warm`
 and `on_failure: skip` for difficult chemistry.

@@ -4,18 +4,34 @@ nb = NB()
 nb.md(en=r"""
 # 3. NaCl diffusion: first coupled run
 
-**Goal.** Run `mode: coupled` for the first time, on the simplest chemistry there is: a solution without any solids.
-Two NaCl solutions, 1 M and 0.5 M, meet in the middle of a 20 mm column and diffuse into each other.
+**Question.** Does the full coupled loop (transport → GEMS in every cell → mass balance) reproduce a known result, on the simplest
+chemistry there is?
 
-New in `case.yaml`:
+## The physical problem
 
-- **`transport.zones`**: two zones, `high` and `low`. Each gets its own recipe in `chemistry.initial`.
-- **`chemistry.inlet: {left: high, right: low}`**: each end is held at the equilibrated pore water of its own zone.
-- **`solid_phases: []`**: solution only. GEMS only speciates the water, and porosity stays constant.
+A 20 mm column of free solution. The left half holds 1 M NaCl, the right half 0.5 M NaCl, and the two meet at x = 10 mm. Each end is in
+contact with a reservoir of its own solution. Salt diffuses from the strong to the weak side. There are no solids, so nothing
+precipitates or dissolves, and the observation time (100 s) is short.
+
+## Model assumptions
+
+- saturated free solution: φ = 1, no solids (`solid_phases: []`), porosity constant;
+- every element (Na, Cl, H, O) is transported with **one** diffusion coefficient, the binary salt coefficient $D_\text{salt}$ (explained below);
+- no electromigration term and no activity gradients in the transport; GEMS computes the speciation and pH in every cell after each step;
+- both ends held at the equilibrated solution of their own half.
+
+## From assumptions to `case.yaml`
+
+| assumption | key in `case.yaml` |
+|---|---|
+| two solutions side by side | `transport.zones` (`high`, `low`) and one recipe per zone in `chemistry.initial` |
+| each end held at its own solution | `chemistry.inlet: {left: high, right: low}` with `dirichlet` boundaries |
+| no solids, constant φ | `solid_phases: []`, `material.phi: 1.0`, feedback off |
+| one diffusion coefficient | `material.De: 1.611e-09` |
+| transport and chemistry every step | `coupling.mode: coupled`, `dt: 1`, `end: 100` |
 
 | | |
 |---|---|
-| Mode | `coupled` |
 | Case folder | `FEniCSx_GEMS/example/demo_NaCl_diffusion` (this notebook runs there) |
 | Domain | 20 mm, 200 cells, 100 s with `dt` = 1 s |
 | Runtime | about 5 s |
@@ -53,18 +69,18 @@ coupling:
 
 The zones give no `phi` or `De` of their own, so both use `material`. Here that is free solution with φ = 1.
 
-### Why one diffusion coefficient is enough here
+### Why one diffusion coefficient is used here
 
 Na⁺ and Cl⁻ diffuse at different rates on their own ($D_\text{Na} = 1.334\times10^{-9}$, $D_\text{Cl} = 2.032\times10^{-9}$ m²/s).
-In solution, electroneutrality makes the two ions move together. For a 1:1 salt, Nernst–Planck then reduces to Fick's law with the salt
-coefficient
+In solution, electroneutrality makes the two ions move together. For a single 1:1 salt, with no electric current and ideal-dilute
+behaviour (activity coefficients ignored in the fluxes), the Nernst–Planck equations reduce to Fick's law with the salt coefficient
 
 $$
 D_\text{salt} = \frac{2 D_\text{Na} D_\text{Cl}}{D_\text{Na} + D_\text{Cl}} = 1.611\times10^{-9}\ \text{m}^2/\text{s},
 $$
 
-which is the `De` in the file. The code transports every element with the same coefficient, so it is exact for this case.
-It would not be exact for mixtures of salts with different ions.
+which is the `De` in the file. Under these assumptions, transporting every element with this one coefficient gives the same salt flux as
+Nernst–Planck. It is not exact for mixtures of salts with different ions, and the concentration dependence of $D_\text{salt}$ at 1 M is ignored.
 """)
 
 nb.md(en=r"""
@@ -105,9 +121,12 @@ axes[0].legend(fontsize=8); plt.tight_layout(); plt.show()
 print(f'largest |model − analytical| / c_high: {100 * worst:.2f} %')
 """)
 nb.md(en=r"""
-The model follows the erf solution closely. The small differences come from the 0.1 mm cells and the first-order time step.
-The chemistry step does almost nothing here: it only speciates the solution again. That is the point of this case. The coupled loop
-runs end to end on a problem whose answer is known.
+**How to read this.** The largest difference to the erf solution is 0.43 % of the 1 M concentration. Because the solution and the code use
+the same $D_\text{salt}$, this measures the numerical error of the coupled loop (0.1 mm cells, first-order time step), not the physics of
+Na–Cl diffusion. Na and Cl stay equal everywhere, which is what electroneutrality requires; a difference between them would point to a problem.
+
+The chemistry step changes almost nothing here: it only speciates the solution again. That is the point of this case: the coupled loop,
+including GEMS in every cell and the mass-balance check, runs end to end on a problem whose answer is known.
 
 ## What GEMS adds: pH and the water
 
@@ -125,6 +144,12 @@ plt.tight_layout(); plt.show()
 nb.md(en=r"""
 The 1 M solution holds slightly less water per litre than the 0.5 M solution, because the salt takes up volume. The transport of H and O carries this
 difference along with the salt.
+
+## What this tutorial shows
+
+- The coupled loop reproduces the erf solution to 0.4 % when chemistry cannot change the answer, and Na and Cl stay balanced.
+- Zones and per-side boundary solutions let a column start from two different waters.
+- It does not test reactions with solids, nor the single-coefficient assumption itself (both sides use the same $D_\text{salt}$).
 
 **Next:** [Tutorial 4](04_cement_leaching.ipynb) adds minerals, which dissolve as the solution changes.
 """)

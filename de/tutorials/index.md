@@ -1,15 +1,47 @@
 # Überblick über die Tutorials
 
-Fünf Fälle, jeder etwas mehr als der vorige. Jedes Tutorial ist ein ausgeführtes Notebook: Es zeigt die vollständige `case.yaml`, startet
-`coupling.py` damit und stellt die Ergebnisse dar, meist im Vergleich mit einer analytischen Lösung oder einem veröffentlichten Benchmark.
+Die fünf Tutorials verwenden den 1D-Code in `FEniCSx_GEMS`. Jeder Fall wird **nur durch Bearbeiten von `case.yaml`** eingerichtet; die Python-Module werden nicht
+geändert. Jedes Tutorial folgt derselben Reihenfolge: das physikalische Problem → die Modellannahmen → wie `case.yaml` sie ausdrückt → der Lauf → wie man das
+Ergebnis liest → was der Fall zeigt und was nicht.
 
-| # | was simuliert wird | Modus | was man lernt | Laufzeit |
-|---|---|---|---|---|
-| [1](01_tracer_diffusion.ipynb) | Ein nicht reaktiver Tracer diffundiert von einem Rand mit c = 1 in eine 10 mm lange wassergesättigte Säule (φ = 0,4); das andere Ende wird auf 0 gehalten, später geschlossen. | `diffusion` | die vier Abschnitte von `case.yaml`, den Lauf, die Ergebnisdateien, die Massenbilanz; Vergleich mit der analytischen Reihenlösung | 2 s |
-| [2](02_single_equilibrium.ipynb) | Ein GEMS-Gleichgewicht einer hydratisierten Zementpaste (Ca, Si, Wasser, Spuren Cl): welche Minerale und welches Porenwasser sie enthält. Ein Scan des Ca/Si von 3,7 bis 0,5 zeigt, wie Portlandit verschwindet, C-S-H Ca verliert und amorphes SiO₂ erscheint. | `chemistry` | Element- und Phasennamen eines GEMS-Projekts, Einheiten der Rezepte (mol pro dm³ Gesamtmaterial), `gibbs`-Anpassungen | 15 s |
-| [3](03_nacl_diffusion.ipynb) | Eine 1-M- und eine 0,5-M-NaCl-Lösung berühren sich in der Mitte einer 20-mm-Säule; das Salz diffundiert 100 s lang von der starken zur schwachen Seite. Keine Feststoffe. | `coupled` | der erste gekoppelte Lauf, zwei Zonen mit eigenen Rezepten, seitenweise Randlösungen; Vergleich mit der erf-Lösung | 5 s |
-| [4](04_cement_leaching.ipynb) | Eine 4 mm dicke hydratisierte Zementpaste steht 1000 Jahre in Kontakt mit 14,6-mM-CaCl₂-Wasser. Ca wird ausgelaugt, Portlandit löst sich von der Oberfläche nach innen, und C-S-H entkalkt hinter der Front. | `coupled` | Minerale und `solid_phases`, lange Zeiten, Rückkopplung von Porosität und Diffusivität; Vergleich mit einem HYDRUS-Benchmarkprofil | 2 × 3–5 min |
-| [5](05_calcite_dolomite.ipynb) | Eine 0,5 m lange Calcitsäule wird 21 000 s lang mit MgCl₂-Lösung durchströmt (Darcy-Fluss 3·10⁻⁶ m/s). Calcit löst sich, Dolomit fällt in einem Band aus, das mit der Strömung wandert und sich dahinter wieder löst. | `coupled` | Advektion (`darcy_flux`), `outflow`-Rand, ein GEMS-Projekt ohne O, numerische Dispersion; Vergleich mit der veröffentlichten Benchmarkabbildung | 25 s |
+Sie bauen aufeinander auf: Diffusion ohne Chemie, dann Chemie ohne Transport, dann beides zusammen, dann Minerale, dann Strömung.
+
+## 1 · [Tracer-Diffusion](01_tracer_diffusion.ipynb)
+
+- **Simuliert:** einen nicht reaktiven Tracer, der von einem Rand mit c = 1 in eine 10 mm lange wassergesättigte Säule diffundiert. Modus `diffusion`, etwa 2 s.
+- **Man lernt:** die vier Abschnitte von `case.yaml`, wie man einen Fall rechnet, die Ergebnisdateien und die Massenbilanz.
+- **Verglichen mit:** der exakten analytischen Lösung.
+- **Ergebnis:** größte Abweichung 9·10⁻⁴ mol/m³ (0,1 % des Randwerts); die Massenbilanz schließt auf 10⁻¹⁷ mol/m².
+
+## 2 · [Ein chemisches Gleichgewicht](02_single_equilibrium.ipynb)
+
+- **Simuliert:** ein GEMS-Gleichgewicht einer hydratisierten Zementpaste, dann einen Scan ihres Ca/Si von 3,7 bis 0,5. Modus `chemistry`, etwa 15 s.
+- **Man lernt:** Element- und Phasennamen eines GEMS-Projekts, Einheiten der Rezepte (mol pro dm³ Gesamtmaterial), wie man ein Rezept prüft, die `gibbs`-Anpassungen.
+- **Verglichen mit:** nichts Externem; der Mineralbestand wird auf Stimmigkeit geprüft (Portlandit + C-S-H bei pH 12,45).
+- **Ergebnis:** Portlandit verschwindet unter Ca/Si ≈ 1,5, amorphes SiO₂ erscheint unter ≈ 0,65.
+
+## 3 · [NaCl-Diffusion](03_nacl_diffusion.ipynb)
+
+- **Simuliert:** 1-M- und 0,5-M-NaCl-Lösung, die sich in einer 20-mm-Säule treffen, 100 s, keine Feststoffe. Modus `coupled`, etwa 5 s.
+- **Man lernt:** den ersten gekoppelten Lauf, Zonen mit eigenen Rezepten, seitenweise Randlösungen.
+- **Verglichen mit:** der erf-Lösung mit dem binären Salzdiffusionskoeffizienten.
+- **Ergebnis:** größte Abweichung 0,43 % der 1-M-Konzentration. Geprüft wird die gekoppelte Schleife, nicht die Annahme eines einzigen Koeffizienten.
+
+## 4 · [Zementauslaugung](04_cement_leaching.ipynb)
+
+- **Simuliert:** eine 4 mm dicke Zementpaste, 1000 Jahre in Kontakt mit 14,6-mM-CaCl₂-Wasser. Modus `coupled`, zwei Läufe zu 3–5 min.
+- **Man lernt:** reagierende Minerale, lange Zeiten und was sich ändert, wenn die Rückkopplung von Porosität und Diffusivität eingeschaltet wird.
+- **Verglichen mit:** HYDRUS-Profilen desselben Benchmarks (φ und De konstant).
+- **Ergebnis:** Die Portlanditfront liegt bis auf etwa eine Zelle (0,1 mm) bei HYDRUS. Mit Rückkopplung wandert die Front etwas *weniger* weit.
+
+## 5 · [Calcit → Dolomit](05_calcite_dolomite.ipynb)
+
+- **Simuliert:** eine 0,5 m lange Calcitsäule, 21 000 s mit MgCl₂-Lösung durchströmt; ein Dolomitband bildet sich und wandert. Modus `coupled`, etwa 25 s.
+- **Man lernt:** Advektion (`darcy_flux`), einen `outflow`-Rand, ein GEMS-Projekt ohne O, numerische Dispersion und Gittergröße.
+- **Verglichen mit:** der veröffentlichten Benchmarkabbildung (nur Vergleich mit dem Auge; die Referenzkurven liegen als Bild vor).
+- **Ergebnis:** Front- und Bandlagen stimmen mit dem Auge überein; die Verfeinerung von 100 auf 1000 Zellen schärft die Bandränder, verschiebt das Band aber nicht.
+
+## Wo die Fälle laufen
 
 Die Tutorials 1 und 2 legen ihre Fälle in `tutorial_runs/` neben `FEniCSx_GEMS` ab, die Tutorials 3 bis 5 laufen im passenden Ordner
 `FEniCSx_GEMS/example/<Fall>/`. Die erste Codezelle jedes Notebooks findet diese Ordner selbst.

@@ -4,21 +4,35 @@ nb = NB()
 nb.md(en=r"""
 # 2. One chemical equilibrium
 
-**Goal.** Switch GEMS on and learn the `chemistry` section of `case.yaml`:
+**Question.** What does GEMS compute for a given material, how do you describe that material in `case.yaml`, and how do you
+check a recipe before a long coupled run?
 
-- which names you may write (elements, phases),
-- what the recipe numbers mean and their units,
-- what GEMS returns, and
-- what the `gibbs` adjustments do.
+## The physical problem
 
-`coupling.mode: chemistry` runs exactly one equilibrium with the `initial` recipe. No mesh is built and
-no time steps are taken. It is the quickest way to check a recipe before you start a long coupled run.
+A small sample of hydrated cement paste: per dm³ it contains 1.12 mol Ca, 0.31 mol Si, half a litre of water and a trace of Cl. Which
+minerals does it contain at equilibrium, what is the composition of its pore water, and what is the pH? Then: how do minerals and pH
+change if the paste contains more silica?
 
-| | |
+## Model assumptions
+
+- a closed sample: nothing enters or leaves, there is no transport and no time;
+- full thermodynamic equilibrium at 25 °C and 1 bar (no kinetics);
+- the phases, species and solution models are those of the GEMS project; only CSHQ, portlandite and amorphous silica are reported;
+- two standard Gibbs energies are adjusted to the values of the benchmark this system comes from.
+
+## From assumptions to `case.yaml`
+
+| assumption | key in `case.yaml` |
 |---|---|
-| Mode | `chemistry` |
-| System | CaO–SiO₂–H₂O (+Cl), phases CSHQ, Portlandite, amorphous silica |
-| Runtime | about 1 s per equilibrium |
+| one equilibrium, no mesh, no time | `coupling.mode: chemistry` |
+| the chemical system | `chemistry.project` (the GEMS files) |
+| 25 °C, 1 bar | `chemistry.temperature: 298.15`, `pressure: 100000` |
+| composition of the sample | `chemistry.initial` (mol per dm³ of bulk material) |
+| minerals to report | `chemistry.solid_phases` |
+| adjusted Gibbs energies | `chemistry.gibbs` |
+
+`transport` and `coupling` must still be present; in this mode only `transport.material.phi` is used, to turn dissolved amounts
+into pore-water concentrations.
 """)
 
 nb.md(en=r"""
@@ -133,21 +147,30 @@ print('dissolved (mol/m3 pore water):', {e: f"{r[e + '_c_mol_m3_water']:.3g}" fo
 print('solids (mol/m3 bulk):         ', {p: round(float(r[p + '_mol_m3_bulk']), 1) for p in ['CSHQ', 'Portlandite', 'Silica-amorph']})
 """)
 nb.md(en=r"""
-The paste is saturated with portlandite (pH ≈ 12.5). Most of the Si sits in C-S-H. Amorphous silica is not stable here.
+**How to read this.** pH 12.45 with about 605 mol/m³ portlandite: the paste is saturated with portlandite, which buffers the pH.
+Most of the Si is bound in C-S-H, and amorphous silica is not stable. This is the usual assemblage of a hydrated Portland cement
+paste, so the recipe and the phase names are consistent.
 
-`summary.txt` also reports the **aqueous-volume/porosity mismatch**. GEMS computes the volume of the solution
-from its own data and compares it with `phi`. In the supplied examples it is a few tenths of a percent; that is an observation, not an acceptance threshold. A large value means the recipe's
-water content does not match the porosity you set in `transport.material`.
+Two checks before using a recipe in a coupled run:
+
+- the **chemical element reconstruction error** in `summary.txt` (how well GEMS reproduces the recipe; here about 10⁻¹¹ mol/m³)
+  should be at round-off level;
+- the **aqueous-volume/porosity mismatch**: GEMS computes the volume of the solution from its own data and compares it with `phi`.
+  In the supplied examples it is a few tenths of a percent; that is an observation, not an acceptance threshold. A large value means the
+  recipe's water content does not match the porosity you set in `transport.material`.
 """)
 nb.code(r"""
 print([l for l in open('t02_equilibrium/results/summary.txt') if 'mismatch' in l][0])
 """)
 
 nb.md(en=r"""
-## Scan the recipe: from portlandite to silica
+## Scan the recipe: more silica, lower Ca/Si
 
-A recipe is easy to change, so it is easy to explore. Here we keep Ca and the water fixed and add SiO₂: per mol of Si
-we also add 2 mol of O. Each value is one run of the same code with `mode: chemistry`.
+A recipe is easy to change, so it is easy to explore. Here Ca and the water stay fixed and SiO₂ is added (per mol of Si also 2 mol of O),
+so the bulk Ca/Si falls from 3.7 to 0.5. Each value is one independent equilibrium with `mode: chemistry`.
+
+Note what this scan is and is not: it is a series of closed samples with different compositions. In real leaching Ca *leaves* the paste;
+the path is different, but the bulk Ca/Si also falls, so the sequence of phase assemblages is a useful guide.
 """)
 nb.code(r"""
 import yaml, subprocess
@@ -181,9 +204,13 @@ a2.set_xlabel('Ca/Si of the recipe'); a2.set_ylabel('pH'); a2.invert_xaxis()
 plt.tight_layout(); plt.show()
 """)
 nb.md(en=r"""
-From left to right the bulk Ca/Si falls, as it does in a paste that loses Ca by leaching. Portlandite runs out first. The C-S-H then
-loses Ca and pH drops. At the lowest Ca/Si amorphous silica appears. A coupled run (Tutorial 4) goes through the same sequence,
-cell by cell, as Ca diffuses out.
+**How to read this.** Three regions appear as Ca/Si falls:
+
+- Ca/Si above about 1.5: portlandite is present and fixes the pH at 12.45;
+- between about 1.5 and 0.65: portlandite is gone, C-S-H takes up the added Si, and the pH drops from 12.3 to about 10;
+- below about 0.65: the C-S-H cannot take up more Si, and amorphous silica precipitates; the pH stays near 9.8.
+
+In the coupled leaching of Tutorial 4 the first two stages appear as a portlandite dissolution front and a decalcifying zone behind it.
 
 ## What do the `gibbs` adjustments do?
 
@@ -202,7 +229,15 @@ for folder in ['results', 'results_no_gibbs']:
     print(f"{folder:17s} pH = {r.pH:.3f}   Ca = {r.Ca_c_mol_m3_water:.2f} mol/m3 water")
 """)
 nb.md(en=r"""
-Use `gibbs: {}` unless you have a reason, such as matching a published benchmark, to change the database.
+Without the adjustments the pH changes by 0.015 and dissolved Ca by about 5 %. Small changes of $G^\circ$ therefore matter for a
+quantitative comparison with a benchmark. Use `gibbs: {}` unless you have such a reason to change the database.
+
+## What this tutorial shows
+
+- `mode: chemistry` computes one equilibrium of a recipe in about a second; use it to check names, units and the mineral assemblage
+  before a coupled run.
+- Recipes are element amounts per dm³ of bulk material, including the water; GEMS returns the minerals, the pore water and pH.
+- The phase sequence with falling Ca/Si (portlandite → C-S-H only → C-S-H + silica) is the chemistry behind cement leaching.
 
 **Next:** [Tutorial 3](03_nacl_diffusion.ipynb) lets two NaCl solutions diffuse into each other with `mode: coupled`: transport and chemistry in every step.
 """)

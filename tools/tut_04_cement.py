@@ -4,23 +4,43 @@ nb = NB()
 nb.md(en=r"""
 # 4. Cement leaching
 
-**Goal.** Put minerals into the column and let them react. A 4 mm hydrated cement paste is in contact with a CaCl₂ water for
-1000 years. Ca diffuses out, portlandite dissolves from the surface inwards, and C-S-H decalcifies behind the front. This is the sequence
-of the [Ca/Si scan in Tutorial 2](02_single_equilibrium.ipynb), now as a function of depth.
+**Question.** How does a hydrated cement paste degrade when its surface is in contact with a low-Ca water for a long time, and does
+the coupled code reproduce a published benchmark of this process?
 
-New in `case.yaml`:
+## The physical problem
 
-- **`solid_phases`** with real minerals, and `gibbs` adjustments taken from the benchmark;
-- **one `inlet` recipe** on a `dirichlet` left boundary, and a `no_flux` right boundary;
-- **long times**: `dt` = 0.1 year and `end` = 1000 years, both in seconds;
-- **feedback switches**: the benchmark keeps φ and De constant; at the end we switch them on.
+A slab of hydrated cement paste, 4 mm thick, the same material as in [Tutorial 2](02_single_equilibrium.ipynb): portlandite and C-S-H,
+pore water at pH 12.45. Its left face is in permanent contact with a large volume of groundwater containing 14.6 mM CaCl₂ (pH about 7.6);
+the right face is sealed. Over 1000 years:
+
+- Ca diffuses out of the paste into the low-Ca water, and Cl diffuses in;
+- portlandite dissolves first, from the surface inwards, leaving a front that moves into the paste;
+- behind that front C-S-H loses Ca, and the pH falls.
+
+## Model assumptions
+
+- saturated pores, transport by diffusion only, one effective diffusion coefficient for all elements;
+- local equilibrium in every cell at every step (no kinetics); phases and data from the GEMS project of Tutorial 2, with the benchmark's Gibbs-energy adjustments;
+- the contact water never changes (a Dirichlet boundary): the reservoir is assumed large and well mixed;
+- **in the benchmark run φ and De stay constant** even though minerals dissolve; this is the benchmark's simplification. In the second run the feedback is switched on.
+
+## From assumptions to `case.yaml`
+
+| assumption | key in `case.yaml` |
+|---|---|
+| the paste | `chemistry.initial` (same recipe as Tutorial 2), `material.phi: 0.5` |
+| minerals that react and are reported | `chemistry.solid_phases: [CSHQ, Portlandite, Silica-amorph]` |
+| contact water, fixed for 1000 years | `chemistry.inlet` (14.6 mM CaCl₂), left boundary `dirichlet` |
+| sealed back face | right boundary `no_flux` |
+| benchmark diffusion coefficient | `material.De: 5.0e-15` = $\phi D_p$ with $D_p = 10^{-14}$ m²/s |
+| constant φ and De (benchmark) | `update_porosity: false`, `update_diffusivity: false` |
+| 1000 years in steps of 0.1 year | `coupling.time` (in seconds) |
 
 | | |
 |---|---|
-| Mode | `coupled` |
 | Case folder | `FEniCSx_GEMS/example/demo_Cement_1D_benchmark` (this notebook runs there) |
 | Domain | 4 mm, 40 cells, 10 000 steps |
-| Runtime | about 5 min per run; 400 000 GEMS equilibria |
+| Runtime | 3–5 min per run; 400 000 GEMS equilibria |
 | Reference | HYDRUS profiles of the same benchmark, `Profile_HYDRUS.out` |
 """)
 nb.code(r"""
@@ -37,8 +57,8 @@ nb.md(en=r"""
 Notes on the numbers:
 
 - `project: ../../chemistry_data/b_time0-dat.lst`: this case uses the GEMS project in the main folder, the same one as Tutorial 2.
-- `De: 5.0e-15` is $\phi D_p$ with the benchmark's pore diffusion coefficient $D_p = 10^{-14}$ m²/s.
-- `dt: 3155760` s is 0.1 year. With $D_p\,\Delta t/h^2 \approx 3$, an explicit scheme would be unstable. Backward Euler is not.
+- `dt: 3155760` s is 0.1 year. With $D_p\,\Delta t/h^2 \approx 3$, an explicit scheme would be unstable. Backward Euler is not, but stability
+  says nothing about accuracy; the time step is the benchmark's choice and is not checked here.
 - `every: 1000` writes a profile every 100 years.
 
 ## Run
@@ -79,8 +99,9 @@ axes[2].set(title='pH', xlabel='x (mm)')
 plt.tight_layout(); plt.show()
 """)
 nb.md(en=r"""
-Portlandite disappears from a growing zone at the surface, with a sharp front. Behind it pH drops from about 12.5 to below 12
-and the C-S-H loses Ca.
+**How to read this.** Portlandite disappears from a zone at the surface that grows with time, and the edge of that zone is sharp: a
+dissolution front. Behind it the pH drops from about 12.5 to below 12 and C-S-H loses Ca, as in the Ca/Si scan of Tutorial 2. Two
+things to check in your own run: the mass balance in `summary.txt` stays at round-off level, and no GEMS failures or skipped cells are reported.
 
 ## Comparison with the HYDRUS benchmark
 
@@ -124,10 +145,13 @@ pd.DataFrame(rows).set_index('t (yr)').style.format('{:.2e}')
 nb.md(en=r"""
 Thick lines are HYDRUS and dashed lines are this model. The two codes put the portlandite front within about one cell (0.1 mm) of each other. The table
 gives the RMS difference over the reference nodes inside the paste, in the units of each column. The node at x = 0 is left out, because there the reference
-stores the boundary water itself (pH 7.6), while this model's first value is the centre of the first cell. The remaining differences come from the different grids (the reference stores values at nodes, including the boundary node;
-here the boundary sits half a cell from the first cell centre), the time stepping and GEMS round-off.
+stores the boundary water itself (pH 7.6), while this model's first value is the centre of the first cell.
 
-Under diffusion control the front moves as $\sqrt{t}$:
+Where do the remaining differences come from? Possible causes are the different grids (the reference stores values at nodes, including the boundary
+node; here the boundary sits half a cell from the first cell centre), the different transport schemes and time stepping, and GEMS round-off. These
+causes have not been separated here; a mesh and time-step refinement of both codes would be needed for that.
+
+If the leaching is controlled by diffusion, the front position should grow as $\sqrt{t}$, i.e. lie on a straight line in the plot below:
 """)
 nb.code(r"""
 def front(df, t, frac=0.5):
@@ -147,9 +171,14 @@ ax.set(xlabel='√t (√yr)', ylabel='portlandite front (mm)'); ax.legend(); plt
 """)
 
 nb.md(en=r"""
-## Switch on porosity and diffusivity feedback
+## Change one assumption: porosity and diffusivity feedback
 
-The benchmark keeps φ and De fixed. In reality, dissolving portlandite opens pores, and diffusion becomes faster in the leached zone.
+The benchmark keeps φ and De fixed. Physically, dissolving portlandite frees pore space, and a more open pore structure lets solutes diffuse
+faster. Switching the feedback on changes two model assumptions:
+
+- φ now follows the volume of the minerals in `solid_phases`: $\phi = \phi_0 + V_\text{solid,0} - V_\text{solid}$;
+- De follows φ through an assumed law, $D_e = D_{e,0}(\phi/\phi_0)^m$ with $m = 2$. The exponent is a model choice, not a measured property of this paste.
+
 Two lines in `case.yaml` switch this on. We write a copy with a new output folder:
 
 ```yaml
@@ -185,10 +214,18 @@ plt.tight_layout(); plt.show()
 print(open('results_feedback/summary.txt').read().split('Final porosity')[1][:120])
 """)
 nb.md(en=r"""
-Dissolution raises φ near the surface from 0.50 to about 0.55, and De rises with $(\phi/\phi_0)^2$ by about 20 %. The effect on the front is small here and
-goes the other way from what one might guess: the portlandite front ends up about 0.1 mm *behind* the constant-property run. Portlandite fills only a few percent
-of the volume, so φ changes little, and the leached zone now also holds more pore water. Check effects like this with a run rather than assuming them.
-The exponent is a model choice, not a property of the paste.
+**How to read this.** Dissolution raises φ near the surface from 0.50 to about 0.55, and De rises with $(\phi/\phi_0)^2$ by about 20 %. The effect on
+the front is small here and goes the other way from what one might expect: the portlandite front ends up about 0.1 mm *behind* the
+constant-property run. One possible reason is that portlandite fills only a few percent of the volume, so φ changes little, while the
+leached zone now holds more pore water; this has not been tested further. The result shows why such feedback should be checked with a run
+rather than assumed.
+
+## What this tutorial shows
+
+- The coupled code produces the expected leaching sequence (portlandite front, C-S-H decalcification, pH drop) and puts the front within
+  about one cell of the HYDRUS benchmark over 1000 years.
+- Switching on the porosity–diffusivity feedback changes the assumptions of the model, and its effect has to be evaluated, not guessed.
+- It does not show which numerical choices cause the remaining differences to HYDRUS, nor whether the feedback law fits a real paste.
 
 **Next:** [Tutorial 5](05_calcite_dolomite.ipynb) adds flow.
 """)

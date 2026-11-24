@@ -4,27 +4,35 @@ nb = NB()
 nb.md(en=r"""
 # 1. First run: tracer diffusion
 
-**Goal.** Run the code once, end to end, without any chemistry. You will
+**Question.** Does the transport part of the code solve diffusion correctly, and how do you run a case and read its output?
 
-- write a complete `case.yaml` with its four sections,
-- run `coupling.py` on it,
-- find the result files, and
-- check the numbers against an analytical solution.
+## The physical problem
 
-`coupling.mode: diffusion` switches GEMS off. Only `transport.py` and `output.py` run, so this
-case also tells you whether FEniCSx is installed correctly.
+A column of porous material, 10 mm long, is fully saturated with water. At the start the pore water contains no tracer.
+From $t = 0$ the left end is in contact with a solution at $c = 1$ mol/m³, and the right end with a solution at $c = 0$.
+The tracer spreads into the column by diffusion only. Nothing reacts, nothing flows, and the material does not change.
 
-| | |
+## Model assumptions
+
+- one non-reactive tracer, no chemistry (GEMS is not called);
+- saturated pores, constant porosity φ = 0.4 and effective diffusion coefficient $D_e = 4\times10^{-10}$ m²/s;
+- no flow, so transport is diffusion only: $\phi\,\partial c/\partial t = \partial_x (D_e\,\partial_x c)$;
+- both ends held at a fixed concentration (Dirichlet boundaries).
+
+With these assumptions the problem has an exact solution, which is what makes it a test.
+
+## From assumptions to `case.yaml`
+
+| assumption | key in `case.yaml` |
 |---|---|
-| Mode | `diffusion` |
-| Domain | 1D, 10 mm, 50 cells |
-| Physics | $\phi\,\partial c/\partial t = \partial_x (D_e\,\partial_x c)$ |
-| Runtime | about 2 s |
-
-## Folder layout
+| no chemistry, one tracer | `coupling.mode: diffusion`, `transport.components: [tracer]` |
+| initial pore water without tracer | `transport.initial: {tracer: 0.0}` |
+| φ and $D_e$ constant | `transport.material`, `update_porosity: false`, `update_diffusivity: false` |
+| fixed concentrations at both ends | `boundary.left/right.type: dirichlet` with `concentrations` |
+| 10 mm, 50 cells, 20 000 s in steps of 100 s | `geometry`, `coupling.time` |
 
 The first code cell finds the `FEniCSx_GEMS` folder, wherever the notebook is opened inside the repository, and works in a
-folder `tutorial_runs/` next to it. Tutorials 1 and 2 keep their cases there:
+folder `tutorial_runs/` next to it:
 
 ```text
 FEniCSx_GEMS/                       the four modules + chemistry_data/
@@ -166,14 +174,15 @@ print(f'max |error| at t = {last.time_s.values[0]:.0f} s: {err:.2e} mol/m3')
 """)
 
 nb.md(en=r"""
-The error is about $10^{-3}$: first-order backward Euler in time plus the cell-centred mesh.
-Halve `dt` or double `cells` and it drops.
+**How to read this.** The largest difference to the exact solution is about $10^{-3}$ mol/m³, i.e. 0.1 % of the boundary value.
+Two approximations contribute: first-order backward Euler in time and one value per cell in
+space. To find out which one dominates, refine one at a time: halve `dt` with the mesh fixed, then double `cells` with `dt` fixed.
 
 ## Mass balance
 
 The code checks every step that the amount in the column changes only by what crossed the boundaries.
 `mass_balance.csv` has the inventory (mol per m² of cross-section), the cumulative boundary input and
-their difference.
+their difference. In a healthy run the difference stays at round-off level (here about $10^{-17}$ mol/m²) and the two curves lie on top of each other.
 """)
 nb.code(r"""
 m = pd.read_csv('t01_tracer/results/mass_balance.csv')
@@ -185,10 +194,10 @@ print('largest balance error:', abs(m.balance_error_mol_m2).max(), 'mol/m2')
 """)
 
 nb.md(en=r"""
-## Change one thing: a closed right end
+## Change one assumption: a closed right end
 
-Inputs are only ever changed in `case.yaml`. Here we load the file, close the right boundary
-(`no_flux`), send results to another folder and run again. In a text editor this is a two-line change:
+Now the right end is sealed instead of being held at $c = 0$. Physically, no tracer can leave the column any more, so the column
+should slowly fill up until the whole pore water is at $c = 1$. In `case.yaml` this is a two-line change:
 
 ```yaml
     right:
@@ -197,6 +206,8 @@ Inputs are only ever changed in `case.yaml`. Here we load the file, close the ri
 output:
   folder: results_noflux
 ```
+
+The notebook makes the change with `yaml` and runs to 100 000 s, long enough to see the column fill.
 """)
 nb.code(r"""
 import yaml
@@ -218,6 +229,12 @@ ax.legend(); plt.tight_layout(); plt.show()
 """)
 
 nb.md(en=r"""
+## What this tutorial shows
+
+- The transport solver reproduces the exact diffusion solution to about 0.1 % with this mesh and time step, and the mass balance closes to round-off.
+- A boundary type changes the physics as expected: with `no_flux` the column fills up instead of reaching a linear profile.
+- It does not test chemistry, flow or porosity changes; those follow in the next tutorials.
+
 **Next:** [Tutorial 2](02_single_equilibrium.ipynb) switches on GEMS and computes one chemical equilibrium.
 """)
 nb.save('01_tracer_diffusion')
