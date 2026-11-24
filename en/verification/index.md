@@ -20,14 +20,16 @@ coupling. Agreement with OGS here is evidence that these shared ingredients beha
 
 | case | reference and conditions | compared variables | result | limits |
 |---|---|---|---|---|
-| [V1 · HAYEKIT](01_hayekit.ipynb) | OGS output at 10 000 s, same mesh and dt; analytical solution | solutes, precipitate, porosity at all nodes | vs OGS ≤ 3·10⁻⁵ (porosity 3·10⁻⁴); vs analytical 24 % (dt = 100 s) down to 0.3–2.7 % | no clean convergence to the analytical solution; ~3 % unexplained |
+| [V1 · HAYEKIT](01_hayekit.ipynb) | OGS output at 10 000 s, same mesh and dt; analytical solution | solutes, precipitate, porosity at all nodes | vs OGS ≤ 3·10⁻⁵ (porosity 3·10⁻⁴); vs analytical 24 % at dt = 100 s, 0.3 % at 10 s, 2.7 % at 1 s (template only) | clearly sensitive to the time step; the existing tests do not show convergence to the analytical solution; OGS compared at 100 s only |
 | [V2 · Calcite column](02_calcite.ipynb) | OGS output at 21 000 s, same mesh | pH, porosity, elements, ions, calcite, dolomite | elements/ions ≤ 1.1 %; minerals 5 % at the front node only | no analytical solution, no mesh study; front-node cause not separated |
-| [V3 · OPC + quartz](03_opc_quartz.ipynb) | OGS time series at 4 nodes, 0–919 years | 14 minerals and solution variables | nRMSE ≤ 0.12 %, zeolites ≤ 0.28 % | closed system (transport not tested); 919–10 000 years without reference |
-| [V4 · comedy2d](04_comedy2d.ipynb) | OGS output 68 s after a restart at ~7.5 days | elements, pH, head, two kinetic phases, velocities | ≤ 1.4·10⁻⁴ with loose kinetic limits; strict limits 56 % off | only 68 s; 5 nodes fail in the restart run, as in OGS |
-| [V5 · ConcreteCrack](05_concretecrack.ipynb) | OGS output at 10 s | 11 elements, porosity, pH, portlandite, head | chemistry ≤ 1.3·10⁻³; head **not** reproduced | only 10 s; head ill-conditioned; FCT variants indistinguishable |
+| [V3 · OPC + quartz](03_opc_quartz.ipynb) | OGS time series at 4 nodes, 0–919 years | 14 minerals and solution variables | nRMSE ≤ 0.12 %, zeolites ≤ 0.28 % | no boundary transport, but with OGS's water replenishment (H, O, Cl, Na, K increase); transport not tested; 919–10 000 years without reference |
+| [V4 · comedy2d](04_comedy2d.ipynb) | OGS output 68 s after a restart at ~7.5 days | elements, pH, head, two kinetic phases, velocities | state after 68 s ≤ 1.4·10⁻⁴ with loose kinetic limits (strict 56 % off); spatial pattern of the 68-s change matches | no error measure for the change itself; only 68 s; 5 nodes fail in the restart run, as in OGS |
+| [V5 · ConcreteCrack](05_concretecrack.ipynb) | OGS output at 10 s | 11 elements, porosity, pH, portlandite, head | chemistry ≤ 1.3·10⁻³; head − 10 m: 0.5–0.6, **not** reproduced | only 10 s; the head comparison cannot distinguish the implementation variants and does not confirm that the flow part is verified |
 
-Error definitions: V1, V2, V4, V5 use max\|template − reference\| / max\|reference\| over all nodes; V3 uses the RMS difference over the OGS
-output times divided by the range of the OGS series (nRMSE).
+Error definitions: V1, V2, V4, V5 use max\|template − reference\| / max\|reference\| over all nodes, applied to the state at the comparison
+time (in V4 not to the change during the 68 s). Exception: the head in V5 is compared as head − 10 m, because the head itself is ≈ 10 m everywhere
+and normalising by it would hide the differences. V3 uses the RMS difference over the OGS output times divided by the range of the
+OGS series (nRMSE).
 
 ## What each case simulates
 
@@ -38,7 +40,8 @@ precipitate fills the pores and slows diffusion.
 Tutorial 5, but with OGS's CG1 transport and dispersivity.
 
 **V3 · OPC concrete + quartz.** A 10 m column of Portland cement concrete with quartz aggregate. Quartz dissolves very slowly (alkali–silica reaction),
-pH falls from 12.9 to about 10 and zeolites form. OGS never reads the boundary conditions, so the column is a closed batch system.
+pH falls from 12.9 to about 10 and zeolites form. OGS never reads the boundary conditions, so nothing crosses the boundaries and every node is the same batch reactor; it is not a closed system,
+because OGS replaces the water consumed by reactions with pore water of the current composition.
 
 **V4 · comedy2d.** A 14 × 14 cm saturated square in 2D: a cement strip between two sand regions, with NaCl and oxalate solutions flowing in. Oxalate
 reacts with portlandite to calcium oxalate at the strip.

@@ -25,8 +25,8 @@ HEAD['01_hayekit'] = {
 | **What is tested** | Kinetic precipitation of a mineral from two counter-diffusing solutes, with porosity and diffusivity feedback, using the OGS-GEM coupling rules (kinetic limits, restart initialisation, `hayekit` water scaling). |
 | **References** | (1) OGS5GEMDEV output `ab1d0100.vtk`: same mesh, same time step (100 s), t = 10 000 s. (2) The analytical solution of Hayek, Kosakowski & Churakov (2011) at t = 1000 s and 10 000 s. |
 | **Compared variables** | A, B (mol/m³ water), AB(s) and porosity at all 101 nodes. Error = max\|template − reference\| / max\|reference\|. |
-| **Result** | Against OGS: ≤ 3·10⁻⁵ for A, B and AB(s), 3·10⁻⁴ for porosity. Against the analytical solution (porosity at 10 000 s): 24 % with dt = 100 s (OGS has the same error), 0.3 % with 10 s, 2.7 % with 1 s. |
-| **Conclusion** | The template reproduces OGS for this case. Neither code converges cleanly to the analytical solution as dt → 0; a difference of a few percent remains unexplained. |
+| **Result** | Against OGS (dt = 100 s): ≤ 3·10⁻⁵ for A, B and AB(s), 3·10⁻⁴ for porosity. Against the analytical solution (porosity at 10 000 s): 24 % with dt = 100 s (OGS and template), 0.3 % with 10 s and 2.7 % with 1 s (template only; OGS was not rerun with these steps). |
+| **Conclusion** | The template reproduces OGS for this case at the OGS time step. The template results are clearly sensitive to the time step, but the existing tests do not show that they converge to the analytical solution. |
 | **Code and run** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`: `python run_case.py` (or `Run.cmd`). This is the OGS template, not the `case.yaml` code of the tutorials. |
 
 """,
@@ -37,8 +37,8 @@ HEAD['01_hayekit'] = {
 | **检验什么** | 两种相向扩散的溶质按动力学速率沉淀为矿物，并带孔隙率和扩散系数反馈；使用 OGS-GEM 的耦合规则（动力学上下限、重启初始化、`hayekit` 水量缩放）。 |
 | **参考** | (1) OGS5GEMDEV 的输出 `ab1d0100.vtk`：相同网格、相同时间步（100 s），t = 10 000 s。(2) Hayek、Kosakowski 和 Churakov（2011）的解析解，t = 1000 s 和 10 000 s。 |
 | **比较的量** | 全部 101 个节点上的 A、B（mol/m³ 水）、AB(s) 和孔隙率。误差 = max\|模板 − 参考\| / max\|参考\|。 |
-| **结果** | 与 OGS 比：A、B、AB(s) ≤ 3·10⁻⁵，孔隙率 3·10⁻⁴。与解析解比（10 000 s 时的孔隙率）：dt = 100 s 时差 24 %（OGS 也一样），10 s 时 0.3 %，1 s 时 2.7 %。 |
-| **结论** | 在这个算例中模板复现了 OGS。dt → 0 时两个代码都没有干净地收敛到解析解，还剩几个百分点的差异没有得到解释。 |
+| **结果** | 与 OGS 比（dt = 100 s）：A、B、AB(s) ≤ 3·10⁻⁵，孔隙率 3·10⁻⁴。与解析解比（10 000 s 时的孔隙率）：dt = 100 s 时差 24 %（OGS 和模板），10 s 时 0.3 %，1 s 时 2.7 %（只用模板算过；OGS 没有用这些时间步重算）。 |
+| **结论** | 在 OGS 的时间步下，模板复现了 OGS。模板结果对时间步明显敏感，但现有试验尚未证明其收敛到解析解。 |
 | **代码与运行** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`：`python run_case.py`（或 `Run.cmd`）。这是 OGS 模板，不是教程里的 `case.yaml` 代码。 |
 
 """,
@@ -49,8 +49,8 @@ HEAD['01_hayekit'] = {
 | **Was geprüft wird** | Kinetische Fällung eines Minerals aus zwei gegeneinander diffundierenden gelösten Stoffen, mit Rückkopplung von Porosität und Diffusivität, nach den Kopplungsregeln von OGS-GEM (kinetische Grenzen, Restart-Initialisierung, `hayekit`-Wasserskalierung). |
 | **Referenzen** | (1) OGS5GEMDEV-Ausgabe `ab1d0100.vtk`: gleiches Netz, gleicher Zeitschritt (100 s), t = 10 000 s. (2) Die analytische Lösung von Hayek, Kosakowski & Churakov (2011) bei t = 1000 s und 10 000 s. |
 | **Verglichene Größen** | A, B (mol/m³ Wasser), AB(s) und Porosität an allen 101 Knoten. Fehler = max\|Vorlage − Referenz\| / max\|Referenz\|. |
-| **Ergebnis** | Gegenüber OGS: ≤ 3·10⁻⁵ für A, B und AB(s), 3·10⁻⁴ für die Porosität. Gegenüber der analytischen Lösung (Porosität bei 10 000 s): 24 % mit dt = 100 s (OGS hat denselben Fehler), 0,3 % mit 10 s, 2,7 % mit 1 s. |
-| **Schluss** | Die Vorlage reproduziert OGS in diesem Fall. Keiner der beiden Codes konvergiert für dt → 0 sauber gegen die analytische Lösung; eine Abweichung von einigen Prozent bleibt ungeklärt. |
+| **Ergebnis** | Gegenüber OGS (dt = 100 s): ≤ 3·10⁻⁵ für A, B und AB(s), 3·10⁻⁴ für die Porosität. Gegenüber der analytischen Lösung (Porosität bei 10 000 s): 24 % mit dt = 100 s (OGS und Vorlage), 0,3 % mit 10 s und 2,7 % mit 1 s (nur die Vorlage; OGS wurde mit diesen Schritten nicht neu gerechnet). |
+| **Schluss** | Die Vorlage reproduziert OGS in diesem Fall beim OGS-Zeitschritt. Die Ergebnisse der Vorlage hängen deutlich vom Zeitschritt ab, die vorhandenen Tests zeigen aber nicht, dass sie gegen die analytische Lösung konvergieren. |
 | **Code und Lauf** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`: `python run_case.py` (oder `Run.cmd`). Das ist die OGS-Vorlage, nicht der `case.yaml`-Code der Tutorials. |
 
 """,
@@ -58,19 +58,21 @@ HEAD['01_hayekit'] = {
 FIX['01_hayekit'] = {
 'en': (r"## Comparison with the analytical solution — the time step matters", r"""## Comparison with the analytical solution — the time step matters
 
-With the OGS time step (100 s), OGS and the template are both 24 % off the analytical porosity at $t = 10^4$ s. A likely reason
-is the explicit treatment of the kinetics: the precipitation rate of each step is computed from the *previous* $\Omega$ and $\phi$.
-With 10 s the error drops to 0.3 %, but with 1 s it rises again to 2.7 %. The result therefore does not converge cleanly as
-$\Delta t \to 0$, and the remaining difference of a few percent is not explained (see the conclusions)."""),
+With the OGS time step (100 s), OGS and the template are both 24 % off the analytical porosity at $t = 10^4$ s. The smaller steps
+were run with the template only (OGS was not rerun): the error is 0.3 % with 10 s and 2.7 % with 1 s. The template results are
+therefore clearly sensitive to the time step, but the error does not decrease steadily, and these three runs do not show that the
+results converge to the analytical solution. One possible cause of the time-step sensitivity is the explicit treatment of the
+kinetics (the precipitation rate of each step is computed from the *previous* $\Omega$ and $\phi$); this has not been tested (see the conclusions)."""),
 'zh': (r"## 和解析解比较——时间步很关键", r"""## 和解析解比较——时间步很关键
 
-用 OGS 的时间步（100 s）时，OGS 和模板在 $t = 10^4$ s 的孔隙率都与解析解差 24 %。一个可能的原因是动力学按显式处理：每一步的沉淀速率用的是 *上一步* 的 $\Omega$ 和 $\phi$。时间步取 10 s 时误差降到 0.3 %，但取 1 s 时又升到 2.7 %。因此 $\Delta t \to 0$ 时结果没有干净地收敛，剩下几个百分点的差异没有得到解释（见结论）。"""),
+用 OGS 的时间步（100 s）时，OGS 和模板在 $t = 10^4$ s 的孔隙率都与解析解差 24 %。更小的时间步只用模板算过（OGS 没有重算）：10 s 时误差为 0.3 %，1 s 时为 2.7 %。因此模板结果对时间步明显敏感，但误差并不随时间步减小而单调下降，这三次计算尚未证明其收敛到解析解。时间步敏感的一个可能原因是动力学按显式处理（每一步的沉淀速率用的是 *上一步* 的 $\Omega$ 和 $\phi$），但这一点没有检验（见结论）。"""),
 'de': (r"## Vergleich mit der analytischen Lösung — der Zeitschritt zählt", r"""## Vergleich mit der analytischen Lösung — der Zeitschritt zählt
 
-Mit dem OGS-Zeitschritt (100 s) liegen OGS und die Vorlage bei $t = 10^4$ s beide 24 % neben der analytischen Porosität. Ein
-wahrscheinlicher Grund ist die explizite Behandlung der Kinetik: Die Fällungsrate jedes Schritts wird aus dem *vorherigen* $\Omega$ und $\phi$
-berechnet. Mit 10 s sinkt der Fehler auf 0,3 %, mit 1 s steigt er aber wieder auf 2,7 %. Das Ergebnis konvergiert für $\Delta t \to 0$
-also nicht sauber, und die verbleibende Abweichung von einigen Prozent ist ungeklärt (siehe Schlussfolgerungen)."""),
+Mit dem OGS-Zeitschritt (100 s) liegen OGS und die Vorlage bei $t = 10^4$ s beide 24 % neben der analytischen Porosität. Die kleineren
+Schritte wurden nur mit der Vorlage gerechnet (OGS nicht): Der Fehler beträgt 0,3 % mit 10 s und 2,7 % mit 1 s. Die Ergebnisse der Vorlage
+hängen also deutlich vom Zeitschritt ab, der Fehler nimmt aber nicht stetig ab, und diese drei Läufe zeigen keine Konvergenz gegen die
+analytische Lösung. Eine mögliche Ursache der Zeitschrittabhängigkeit ist die explizite Behandlung der Kinetik (die Fällungsrate jedes Schritts
+wird aus dem *vorherigen* $\Omega$ und $\phi$ berechnet); das wurde nicht geprüft (siehe Schlussfolgerungen)."""),
 }
 CONCL['01_hayekit'] = {
 'en': r"""## Conclusions
@@ -79,12 +81,14 @@ CONCL['01_hayekit'] = {
 
 - The template implements the OGS-GEM rules for a kinetic mineral (moving lower/upper limits, seeding, cold starts), the restart
   initialisation, the `hayekit` water scaling and the porosity–diffusivity feedback as OGS does: the two codes agree to 10⁻⁵–10⁻⁴.
-- The large error of both codes against the analytical solution at 100 s is a time-step effect, not a difference between the codes.
+- At the OGS time step (100 s) both codes have the same 24 % error against the analytical solution, so this error is not a difference between the codes.
 
 **Not shown, or open**
 
-- Convergence to the analytical solution: with dt = 1 s a difference of about 3 % remains. Possible causes are the spatial resolution,
-  the non-reacting boundary nodes, or assumptions of the analytical solution; none of them has been tested separately.
+- Convergence to the analytical solution: the template results are clearly sensitive to the time step (24 %, 0.3 %, 2.7 % with
+  100, 10, 1 s), but the existing tests do not show that they converge to the analytical solution. Explicit kinetics, the spatial
+  resolution, the non-reacting boundary nodes and the assumptions of the analytical solution are possible causes; none has been tested separately.
+- The smaller time steps were run with the template only; OGS was compared at 100 s only.
 - The case is 1D and has no flow.
 """,
 'zh': r"""## 结论
@@ -92,11 +96,12 @@ CONCL['01_hayekit'] = {
 **这个算例支持的结论**
 
 - 模板对动力学矿物（移动的上下限、成核种子、冷启动）、重启初始化、`hayekit` 水量缩放以及孔隙率–扩散系数反馈的处理与 OGS 一致：两个代码的结果吻合到 10⁻⁵–10⁻⁴。
-- 100 s 时两个代码相对解析解的大误差是时间步造成的，不是两个代码之间的差别。
+- 在 OGS 的时间步（100 s）下，两个代码相对解析解有相同的 24 % 误差，所以这个误差不是两个代码之间的差别。
 
 **没有说明的、或仍未解决的问题**
 
-- 是否收敛到解析解：dt = 1 s 时仍差约 3 %。可能的原因有空间分辨率、不参与反应的边界节点，或解析解本身的假设，这些都没有单独检验。
+- 是否收敛到解析解：模板结果对时间步明显敏感（100、10、1 s 时分别为 24 %、0.3 %、2.7 %），但现有试验尚未证明其收敛到解析解。显式动力学、空间分辨率、不参与反应的边界节点和解析解本身的假设都是可能的原因，都没有单独检验。
+- 更小的时间步只用模板算过；与 OGS 的比较只在 100 s 下进行。
 - 算例是一维的，没有水流。
 """,
 'de': r"""## Schlussfolgerungen
@@ -105,12 +110,14 @@ CONCL['01_hayekit'] = {
 
 - Die Vorlage setzt die OGS-GEM-Regeln für ein kinetisches Mineral (wandernde untere/obere Grenzen, Keimbildung, Kaltstarts), die
   Restart-Initialisierung, die `hayekit`-Wasserskalierung und die Rückkopplung Porosität–Diffusivität so um wie OGS: Beide Codes stimmen auf 10⁻⁵–10⁻⁴ überein.
-- Der große Fehler beider Codes gegenüber der analytischen Lösung bei 100 s ist ein Zeitschritteffekt, kein Unterschied zwischen den Codes.
+- Beim OGS-Zeitschritt (100 s) haben beide Codes denselben Fehler von 24 % gegenüber der analytischen Lösung; dieser Fehler ist also kein Unterschied zwischen den Codes.
 
 **Nicht gezeigt oder offen**
 
-- Konvergenz gegen die analytische Lösung: Mit dt = 1 s bleiben etwa 3 %. Mögliche Ursachen sind die räumliche Auflösung, die nicht
-  reagierenden Randknoten oder Annahmen der analytischen Lösung; keine davon wurde einzeln geprüft.
+- Konvergenz gegen die analytische Lösung: Die Ergebnisse der Vorlage hängen deutlich vom Zeitschritt ab (24 %, 0,3 %, 2,7 % mit 100, 10, 1 s),
+  die vorhandenen Tests zeigen aber nicht, dass sie gegen die analytische Lösung konvergieren. Explizite Kinetik, räumliche Auflösung, die nicht
+  reagierenden Randknoten und Annahmen der analytischen Lösung sind mögliche Ursachen; keine wurde einzeln geprüft.
+- Die kleineren Zeitschritte wurden nur mit der Vorlage gerechnet; mit OGS wurde nur bei 100 s verglichen.
 - Der Fall ist eindimensional und ohne Strömung.
 """,
 }
@@ -206,7 +213,7 @@ HEAD['03_opc_quartz'] = {
 
 | | |
 |---|---|
-| **What is tested** | Long-term chemistry driven by one slow kinetic mineral (quartz, alkali–silica reaction) in a closed system: initial species constraints, the two-pass OGS initialisation, `hydrology='none'` and a lumped mass matrix. |
+| **What is tested** | Long-term chemistry driven by one slow kinetic mineral (quartz, alkali–silica reaction) with no transport across the boundaries, but with OGS's water replenishment: initial species constraints, the two-pass OGS initialisation, `hydrology='none'` and a lumped mass matrix. |
 | **Reference** | OGS5GEMDEV time series at the four monitoring nodes (`node1/10/50/100.dat`), 351 output times from 0 to **919 years**. No analytical solution. |
 | **Compared variables** | Quartz, portlandite, C-S-H end members, ettringite, zeolites, gypsum, pH, porosity, dissolved Si, Ca, Na, Cl. Error = nRMSE: RMS difference over the OGS output times divided by the range of the OGS series. |
 | **Result** | nRMSE ≤ 0.12 % for all variables except the zeolites (chabazite 0.28 %, scolecite 0.18 %). Portlandite is exhausted after 88 years (OGS 88.7), ettringite after 858 years (OGS 887). |
@@ -218,7 +225,7 @@ HEAD['03_opc_quartz'] = {
 
 | | |
 |---|---|
-| **检验什么** | 封闭体系中由一种慢动力学矿物（石英，碱–硅反应）驱动的长期化学演化：初始物种约束、OGS 的两遍初始化、`hydrology='none'` 和集中质量矩阵。 |
+| **检验什么** | 无边界输运、但包含 OGS 补水处理的体系中，由一种慢动力学矿物（石英，碱–硅反应）驱动的长期化学演化：初始物种约束、OGS 的两遍初始化、`hydrology='none'` 和集中质量矩阵。 |
 | **参考** | OGS5GEMDEV 在四个监测节点（`node1/10/50/100.dat`）的时间序列，0 到 **919 年**共 351 个输出时刻。没有解析解。 |
 | **比较的量** | 石英、portlandite、C-S-H 端元、钙矾石、沸石、石膏、pH、孔隙率、溶解的 Si、Ca、Na、Cl。误差 = nRMSE：在 OGS 输出时刻上的均方根差除以 OGS 序列的变化范围。 |
 | **结果** | 除沸石外（菱沸石 0.28 %、钙沸石 0.18 %），所有量的 nRMSE ≤ 0.12 %。portlandite 在 88 年时耗尽（OGS 88.7 年），钙矾石在 858 年时耗尽（OGS 887 年）。 |
@@ -230,7 +237,7 @@ HEAD['03_opc_quartz'] = {
 
 | | |
 |---|---|
-| **Was geprüft wird** | Langzeitchemie, angetrieben von einem langsamen kinetischen Mineral (Quarz, Alkali-Kieselsäure-Reaktion) in einem geschlossenen System: Anfangsbedingungen für Spezies, die zweistufige OGS-Initialisierung, `hydrology='none'` und eine konzentrierte Massenmatrix. |
+| **Was geprüft wird** | Langzeitchemie, angetrieben von einem langsamen kinetischen Mineral (Quarz, Alkali-Kieselsäure-Reaktion) ohne Transport über die Ränder, aber mit der Wassernachlieferung von OGS: Anfangsbedingungen für Spezies, die zweistufige OGS-Initialisierung, `hydrology='none'` und eine konzentrierte Massenmatrix. |
 | **Referenz** | OGS5GEMDEV-Zeitreihen an den vier Beobachtungsknoten (`node1/10/50/100.dat`), 351 Ausgabezeiten von 0 bis **919 Jahren**. Keine analytische Lösung. |
 | **Verglichene Größen** | Quarz, Portlandit, C-S-H-Endglieder, Ettringit, Zeolithe, Gips, pH, Porosität, gelöstes Si, Ca, Na, Cl. Fehler = nRMSE: RMS-Abweichung über die OGS-Ausgabezeiten, geteilt durch die Spannweite der OGS-Reihe. |
 | **Ergebnis** | nRMSE ≤ 0,12 % für alle Größen außer den Zeolithen (Chabasit 0,28 %, Skolezit 0,18 %). Portlandit ist nach 88 Jahren aufgebraucht (OGS 88,7), Ettringit nach 858 Jahren (OGS 887). |
@@ -250,7 +257,10 @@ CONCL['03_opc_quartz'] = {
 **Not shown, or open**
 
 - Nothing after 919 years: the remaining 9000 years are a prediction without a reference.
-- Transport is not tested. OGS ignores the boundary conditions (they are written after `#STOP`), so the column is closed and every node is the same batch reactor.
+- Transport is not tested. OGS ignores the boundary conditions (they are written after `#STOP`), so nothing crosses the boundaries and every node is the same batch reactor.
+- The system is not closed in the strict sense: with `$FLAG_COUPLING_HYDROLOGY 0` the water consumed by reactions is replaced by pore water of the
+  current composition (the template does the same with `hydrology='none'`), so the totals of H, O, Cl, Na and K increase. The comparison
+  tests this OGS rule, not a mass-conserving batch reactor.
 - The time step differs (1–10 years here, adaptive steps ≤ 10⁵ s in OGS). The 30-year later exhaustion of ettringite in OGS is probably a
   time-step effect, but this has not been tested.
 - Gas diffusion (`$FLAG_GAS_DIFFUSION 1`) is not modelled.
@@ -264,7 +274,8 @@ CONCL['03_opc_quartz'] = {
 **没有说明的、或仍未解决的问题**
 
 - 919 年以后没有任何对比：剩下的 9000 年是没有参考的预测。
-- 没有检验输运。OGS 忽略了边界条件（它们写在 `#STOP` 之后），所以柱子是封闭的，每个节点都是同样的批式反应器。
+- 没有检验输运。OGS 忽略了边界条件（它们写在 `#STOP` 之后），所以没有物质穿过边界，每个节点都是同样的批式反应器。
+- 这不是严格意义上的封闭体系：在 `$FLAG_COUPLING_HYDROLOGY 0` 下，反应消耗的水由当前组成的孔隙水补充（模板用 `hydrology='none'` 做同样的处理），因此 H、O、Cl、Na 和 K 的总量会增加。比较检验的是 OGS 的这一规则，而不是质量守恒的批式反应器。
 - 时间步不同（这里 1–10 年，OGS 为 ≤ 10⁵ s 的自适应步长）。OGS 中钙矾石晚 30 年耗尽，可能是时间步的影响，但没有检验。
 - 没有模拟气体扩散（`$FLAG_GAS_DIFFUSION 1`）。
 """,
@@ -278,7 +289,10 @@ CONCL['03_opc_quartz'] = {
 **Nicht gezeigt oder offen**
 
 - Nichts nach 919 Jahren: Die übrigen 9000 Jahre sind eine Vorhersage ohne Referenz.
-- Der Transport wird nicht geprüft. OGS ignoriert die Randbedingungen (sie stehen nach `#STOP`), die Säule ist also geschlossen und jeder Knoten derselbe Batchreaktor.
+- Der Transport wird nicht geprüft. OGS ignoriert die Randbedingungen (sie stehen nach `#STOP`), über die Ränder gelangt also nichts, und jeder Knoten ist derselbe Batchreaktor.
+- Das System ist nicht im strengen Sinn geschlossen: Mit `$FLAG_COUPLING_HYDROLOGY 0` wird das von Reaktionen verbrauchte Wasser durch Porenwasser der
+  aktuellen Zusammensetzung ersetzt (die Vorlage macht dasselbe mit `hydrology='none'`), daher nehmen die Gesamtmengen von H, O, Cl, Na und K zu. Der
+  Vergleich prüft diese OGS-Regel, nicht einen massenerhaltenden Batchreaktor.
 - Der Zeitschritt unterscheidet sich (hier 1–10 Jahre, in OGS adaptive Schritte ≤ 10⁵ s). Das um 30 Jahre spätere Verschwinden von Ettringit in OGS ist
   wahrscheinlich ein Zeitschritteffekt, wurde aber nicht geprüft.
 - Gasdiffusion (`$FLAG_GAS_DIFFUSION 1`) wird nicht modelliert.
@@ -293,9 +307,9 @@ HEAD['04_comedy2d'] = {
 |---|---|
 | **What is tested** | A 2D Darcy flow field driving advection–dispersion, two kinetic phases with the OGS 2017 rules (sub-steps, lower-limit checks), and the excess-water source from GEMS volume changes. |
 | **Reference** | OGS5GEMDEV output after **6 steps (68 s)**, restarted from an OGS state at about 7.5 days; same mesh (1849 nodes). |
-| **Compared variables** | Element concentrations, porosity, pH, head, portlandite and calcium oxalate at all nodes, plus element velocities; also the *change* during the 68 s. Error = max\|template − OGS\| / max\|OGS\|. |
-| **Result** | With loose kinetic limits: ≤ 1.4·10⁻⁴ for all variables (Ca), head 10⁻⁹, velocities ~10⁻⁵. With strict limits Ca is 56 % off — the reference corresponds to loose limits. |
-| **Conclusion** | The short-term change near the reaction front is reproduced node by node, and the comparison identifies how the 2017 OGS code treated kinetic limits. Longer times are not compared. |
+| **Compared variables** | Element concentrations, porosity, pH, head, portlandite and calcium oxalate at all nodes, plus element velocities. Error = max\|template − OGS\| / max\|OGS\| of the **state after 68 s**. The *change* during the 68 s is compared only as a spatial pattern (figure), without an error measure. |
+| **Result** | With loose kinetic limits, state after 68 s: ≤ 1.4·10⁻⁴ for all variables (Ca), head 10⁻⁹, velocities ~10⁻⁵. With strict limits Ca is 56 % off — the reference corresponds to loose limits. |
+| **Conclusion** | The state after 68 s agrees with OGS to ≤ 1.4·10⁻⁴, and the spatial pattern of the change near the reaction front matches the OGS pattern. Because the change is small compared with the state, the state error does not measure how accurately the change itself is reproduced. The comparison also identifies how the 2017 OGS code treated kinetic limits. Longer times are not compared. |
 | **Code and run** | `GEMS_FEniCSx_OGS5_Template/cases/4_comedy2d`: `python run_case.py` (or `Run.cmd`). This is the OGS template, not the `case.yaml` code of the tutorials. |
 
 """,
@@ -305,9 +319,9 @@ HEAD['04_comedy2d'] = {
 |---|---|
 | **检验什么** | 二维 Darcy 流场驱动的对流–弥散，按 OGS 2017 规则处理的两个动力学相（子步、下限检查），以及 GEMS 体积变化产生的多余水源项。 |
 | **参考** | OGS5GEMDEV 从约 7.5 天时的 OGS 状态重启、计算 **6 步（68 s）** 后的输出；相同网格（1849 个节点）。 |
-| **比较的量** | 所有节点上的元素浓度、孔隙率、pH、水头、portlandite 和草酸钙，以及单元流速；另外还比较 68 s 内的 *变化量*。误差 = max\|模板 − OGS\| / max\|OGS\|。 |
-| **结果** | 用宽松（loose）的动力学上下限时：所有量 ≤ 1.4·10⁻⁴（Ca），水头 10⁻⁹，流速约 10⁻⁵。用严格（strict）上下限时 Ca 差 56 %，说明参考结果对应的是宽松上下限。 |
-| **结论** | 反应锋面附近的短时变化被逐节点复现；比较还确定了 2017 版 OGS 代码处理动力学上下限的方式。更长时间的演化没有对比。 |
+| **比较的量** | 所有节点上的元素浓度、孔隙率、pH、水头、portlandite 和草酸钙，以及单元流速。误差 = **68 s 后状态** 的 max\|模板 − OGS\| / max\|OGS\|。68 s 内的 *变化量* 只按空间分布（图）比较，没有误差指标。 |
+| **结果** | 用宽松（loose）的动力学上下限时，68 s 后的状态：所有量 ≤ 1.4·10⁻⁴（Ca），水头 10⁻⁹，流速约 10⁻⁵。用严格（strict）上下限时 Ca 差 56 %，说明参考结果对应的是宽松上下限。 |
+| **结论** | 68 s 后的状态与 OGS 吻合到 ≤ 1.4·10⁻⁴，反应锋面附近变化量的空间分布与 OGS 一致。由于变化量相对状态本身很小，状态误差不能衡量变化量本身复现得有多准。比较还确定了 2017 版 OGS 代码处理动力学上下限的方式。更长时间的演化没有对比。 |
 | **代码与运行** | `GEMS_FEniCSx_OGS5_Template/cases/4_comedy2d`：`python run_case.py`（或 `Run.cmd`）。这是 OGS 模板，不是教程里的 `case.yaml` 代码。 |
 
 """,
@@ -317,9 +331,9 @@ HEAD['04_comedy2d'] = {
 |---|---|
 | **Was geprüft wird** | Ein 2D-Darcy-Strömungsfeld, das Advektion–Dispersion antreibt, zwei kinetische Phasen nach den OGS-Regeln von 2017 (Unterschritte, Prüfung der unteren Grenzen) und die Überschusswasserquelle aus GEMS-Volumenänderungen. |
 | **Referenz** | OGS5GEMDEV-Ausgabe nach **6 Schritten (68 s)**, neu gestartet von einem OGS-Zustand bei etwa 7,5 Tagen; gleiches Netz (1849 Knoten). |
-| **Verglichene Größen** | Elementkonzentrationen, Porosität, pH, Druckhöhe, Portlandit und Calciumoxalat an allen Knoten sowie Elementgeschwindigkeiten; außerdem die *Änderung* während der 68 s. Fehler = max\|Vorlage − OGS\| / max\|OGS\|. |
-| **Ergebnis** | Mit lockeren kinetischen Grenzen: ≤ 1,4·10⁻⁴ für alle Größen (Ca), Druckhöhe 10⁻⁹, Geschwindigkeiten ~10⁻⁵. Mit strengen Grenzen liegt Ca 56 % daneben — die Referenz entspricht den lockeren Grenzen. |
-| **Schluss** | Die kurzfristige Änderung an der Reaktionsfront wird Knoten für Knoten reproduziert, und der Vergleich zeigt, wie der OGS-Code von 2017 kinetische Grenzen behandelte. Längere Zeiten werden nicht verglichen. |
+| **Verglichene Größen** | Elementkonzentrationen, Porosität, pH, Druckhöhe, Portlandit und Calciumoxalat an allen Knoten sowie Elementgeschwindigkeiten. Fehler = max\|Vorlage − OGS\| / max\|OGS\| des **Zustands nach 68 s**. Die *Änderung* während der 68 s wird nur als räumliches Muster (Abbildung) verglichen, ohne Fehlermaß. |
+| **Ergebnis** | Mit lockeren kinetischen Grenzen, Zustand nach 68 s: ≤ 1,4·10⁻⁴ für alle Größen (Ca), Druckhöhe 10⁻⁹, Geschwindigkeiten ~10⁻⁵. Mit strengen Grenzen liegt Ca 56 % daneben — die Referenz entspricht den lockeren Grenzen. |
+| **Schluss** | Der Zustand nach 68 s stimmt auf ≤ 1,4·10⁻⁴ mit OGS überein, und das räumliche Muster der Änderung an der Reaktionsfront entspricht dem von OGS. Da die Änderung klein gegenüber dem Zustand ist, misst der Zustandsfehler nicht, wie genau die Änderung selbst reproduziert wird. Der Vergleich zeigt außerdem, wie der OGS-Code von 2017 kinetische Grenzen behandelte. Längere Zeiten werden nicht verglichen. |
 | **Code und Lauf** | `GEMS_FEniCSx_OGS5_Template/cases/4_comedy2d`: `python run_case.py` (oder `Run.cmd`). Das ist die OGS-Vorlage, nicht der `case.yaml`-Code der Tutorials. |
 
 """,
@@ -330,11 +344,13 @@ CONCL['04_comedy2d'] = {
 **Supported by this case**
 
 - 2D Darcy flow, advection–dispersion driven by the flux $-K\nabla h$, two kinetic phases with sub-steps and lower-limit checks, and the
-  excess-water source reproduce the OGS changes over 68 s node by node (≤ 1.4·10⁻⁴).
+  excess-water source reproduce the OGS state after 68 s (≤ 1.4·10⁻⁴, normalised by the maximum of the reference), and the
+  spatial pattern of the change over the 68 s matches OGS.
 - The reference was produced with *loose* kinetic limits; this follows from the comparison (strict limits give 56 % in Ca), not from the OGS input.
 
 **Not shown, or open**
 
+- The accuracy of the change itself: no error measure is computed for the 68-s change; the 1.4·10⁻⁴ refers to the state.
 - Only 68 s after a restart are compared; the evolution over days is not.
 - In the restart run GEMS fails twice at five nodes (1065, 1067, 1171, 1177, 1183). OGS continues there, and so does the template
   (`on_failure='continue'`); the effect of these nodes has not been isolated.
@@ -344,11 +360,12 @@ CONCL['04_comedy2d'] = {
 
 **这个算例支持的结论**
 
-- 二维 Darcy 流、由通量 $-K\nabla h$ 驱动的对流–弥散、带子步和下限检查的两个动力学相，以及多余水源项，逐节点复现了 OGS 在 68 s 内的变化（≤ 1.4·10⁻⁴）。
+- 二维 Darcy 流、由通量 $-K\nabla h$ 驱动的对流–弥散、带子步和下限检查的两个动力学相，以及多余水源项，复现了 OGS 在 68 s 后的状态（≤ 1.4·10⁻⁴，以参考解最大值归一化），68 s 内变化量的空间分布也与 OGS 一致。
 - 参考结果是用 *宽松* 的动力学上下限算出的；这一点是从比较中得出的（严格上下限时 Ca 差 56 %），而不是从 OGS 输入中读出的。
 
 **没有说明的、或仍未解决的问题**
 
+- 变化量本身的精度：没有为 68 s 内的变化量计算误差指标；1.4·10⁻⁴ 指的是状态。
 - 只比较了重启后的 68 s，没有比较几天尺度上的演化。
 - 重启计算中有 5 个节点（1065、1067、1171、1177、1183）的 GEMS 计算两次都失败。OGS 在这些节点上继续计算，模板也一样（`on_failure='continue'`）；这些节点的影响没有单独分析。
 - `retry_perturb=1e-12` 不是 OGS 的规则；之所以需要它，是因为当前的 GEMS3K 有时会在一个锋面节点上失败。
@@ -358,11 +375,13 @@ CONCL['04_comedy2d'] = {
 **Was dieser Fall belegt**
 
 - 2D-Darcy-Strömung, Advektion–Dispersion mit dem Fluss $-K\nabla h$, zwei kinetische Phasen mit Unterschritten und Prüfung der unteren Grenzen sowie
-  die Überschusswasserquelle reproduzieren die OGS-Änderungen über 68 s Knoten für Knoten (≤ 1,4·10⁻⁴).
+  die Überschusswasserquelle reproduzieren den OGS-Zustand nach 68 s (≤ 1,4·10⁻⁴, normiert auf das Maximum der Referenz), und das
+  räumliche Muster der Änderung über die 68 s entspricht OGS.
 - Die Referenz wurde mit *lockeren* kinetischen Grenzen erzeugt; das folgt aus dem Vergleich (strenge Grenzen ergeben 56 % bei Ca), nicht aus der OGS-Eingabe.
 
 **Nicht gezeigt oder offen**
 
+- Die Genauigkeit der Änderung selbst: Für die Änderung über 68 s wird kein Fehlermaß berechnet; die 1,4·10⁻⁴ beziehen sich auf den Zustand.
 - Verglichen werden nur 68 s nach einem Restart, nicht die Entwicklung über Tage.
 - Im Restart-Lauf scheitert GEMS an fünf Knoten (1065, 1067, 1171, 1177, 1183) zweimal. OGS rechnet dort weiter, die Vorlage ebenso
   (`on_failure='continue'`); der Einfluss dieser Knoten wurde nicht isoliert.
@@ -378,9 +397,9 @@ HEAD['05_concretecrack'] = {
 |---|---|
 | **What is tested** | Fracture line elements in a 2D mesh, porosity-dependent permeability (Kozeny–Carman) and diffusion, FEM-FCT, and the initialisation of four chemical zones — over the first 10 s. |
 | **Reference** | OGS5GEMDEV output `decal0010.vtk` at t = 10 s (10 steps of 1 s), written by 4 PETSc processes; mapped to the template mesh by coordinates. No analytical solution. |
-| **Compared variables** | 11 element concentrations, porosity, pH, portlandite and head at all nodes, for four variants (OGS FCT sign, textbook FCT, no FCT, no excess-water source). Error = max\|template − OGS\| / max\|OGS\|. |
+| **Compared variables** | 11 element concentrations, porosity, pH, portlandite and head at all nodes, for four variants (OGS FCT sign, textbook FCT, no FCT, no excess-water source). Error = max\|template − OGS\| / max\|OGS\|; for the head it is computed on head − 10 m (the head itself is ≈ 10 m everywhere). |
 | **Result** | Elements ≤ 1.3·10⁻³, porosity ~3·10⁻⁶, pH ~4·10⁻⁵, portlandite ≤ 2·10⁻⁵ — the level at which OGS itself scatters for identical compositions (~10⁻³). The **head is not reproduced** in any variant (relative error of head − 10 m is 0.5–0.6). |
-| **Conclusion** | The initial chemistry and the first 10 s of crack–matrix coupling agree with OGS. A node-by-node head comparison is not meaningful here (ill-conditioned flow matrix, excess water from GEMS round-off), and the four variants cannot be distinguished. |
+| **Conclusion** | The initial chemistry and the first 10 s of crack–matrix coupling agree with OGS. The current head comparison cannot distinguish the implementation variants and does not confirm that the flow part is verified (ill-conditioned flow matrix, excess water from GEMS round-off). |
 | **Code and run** | `GEMS_FEniCSx_OGS5_Template/cases/5_concretecrack`: `python run_case.py` (or `Run.cmd`). This is the OGS template, not the `case.yaml` code of the tutorials. |
 
 """,
@@ -390,9 +409,9 @@ HEAD['05_concretecrack'] = {
 |---|---|
 | **检验什么** | 嵌入二维网格的裂缝线单元、随孔隙率变化的渗透率（Kozeny–Carman）和扩散、FEM-FCT，以及四个化学分区的初始化，时间只有最初 10 s。 |
 | **参考** | OGS5GEMDEV 在 t = 10 s（10 步 × 1 s）的输出 `decal0010.vtk`，由 4 个 PETSc 进程写出，按坐标映射到模板网格。没有解析解。 |
-| **比较的量** | 所有节点上的 11 种元素浓度、孔隙率、pH、portlandite 和水头，共四种变体（OGS 的 FCT 符号、教科书 FCT、不用 FCT、不加多余水源项）。误差 = max\|模板 − OGS\| / max\|OGS\|。 |
+| **比较的量** | 所有节点上的 11 种元素浓度、孔隙率、pH、portlandite 和水头，共四种变体（OGS 的 FCT 符号、教科书 FCT、不用 FCT、不加多余水源项）。误差 = max\|模板 − OGS\| / max\|OGS\|；水头的误差用 水头 − 10 m 计算（水头本身处处约为 10 m）。 |
 | **结果** | 元素 ≤ 1.3·10⁻³，孔隙率约 3·10⁻⁶，pH 约 4·10⁻⁵，portlandite ≤ 2·10⁻⁵，与 OGS 自身对相同组成给出的离散程度（约 10⁻³）相当。**水头在任何变体中都没有复现**（水头 − 10 m 的相对误差为 0.5–0.6）。 |
-| **结论** | 初始化学和最初 10 s 的裂缝–基质耦合与 OGS 一致。这里逐节点比较水头没有意义（流动矩阵病态，多余水来自 GEMS 的舍入误差），四种变体也无法区分。 |
+| **结论** | 初始化学和最初 10 s 的裂缝–基质耦合与 OGS 一致。当前水头比较不足以区分各实现方案，也不能确认流动部分已通过验证（流动矩阵病态，多余水来自 GEMS 的舍入误差）。 |
 | **代码与运行** | `GEMS_FEniCSx_OGS5_Template/cases/5_concretecrack`：`python run_case.py`（或 `Run.cmd`）。这是 OGS 模板，不是教程里的 `case.yaml` 代码。 |
 
 """,
@@ -402,9 +421,9 @@ HEAD['05_concretecrack'] = {
 |---|---|
 | **Was geprüft wird** | Kluft-Linienelemente in einem 2D-Netz, porositätsabhängige Permeabilität (Kozeny–Carman) und Diffusion, FEM-FCT und die Initialisierung von vier chemischen Zonen — über die ersten 10 s. |
 | **Referenz** | OGS5GEMDEV-Ausgabe `decal0010.vtk` bei t = 10 s (10 Schritte zu 1 s), geschrieben von 4 PETSc-Prozessen; über Koordinaten auf das Netz der Vorlage abgebildet. Keine analytische Lösung. |
-| **Verglichene Größen** | 11 Elementkonzentrationen, Porosität, pH, Portlandit und Druckhöhe an allen Knoten, für vier Varianten (OGS-FCT-Vorzeichen, Lehrbuch-FCT, ohne FCT, ohne Überschusswasserquelle). Fehler = max\|Vorlage − OGS\| / max\|OGS\|. |
+| **Verglichene Größen** | 11 Elementkonzentrationen, Porosität, pH, Portlandit und Druckhöhe an allen Knoten, für vier Varianten (OGS-FCT-Vorzeichen, Lehrbuch-FCT, ohne FCT, ohne Überschusswasserquelle). Fehler = max\|Vorlage − OGS\| / max\|OGS\|; für die Druckhöhe mit Druckhöhe − 10 m berechnet (die Druckhöhe selbst ist überall ≈ 10 m). |
 | **Ergebnis** | Elemente ≤ 1,3·10⁻³, Porosität ~3·10⁻⁶, pH ~4·10⁻⁵, Portlandit ≤ 2·10⁻⁵ — das Niveau, auf dem OGS selbst bei identischer Zusammensetzung streut (~10⁻³). Die **Druckhöhe wird in keiner Variante reproduziert** (relativer Fehler von Druckhöhe − 10 m: 0,5–0,6). |
-| **Schluss** | Die Anfangschemie und die ersten 10 s der Kopplung von Riss und Matrix stimmen mit OGS überein. Ein knotengenauer Vergleich der Druckhöhe ist hier nicht sinnvoll (schlecht konditionierte Strömungsmatrix, Überschusswasser aus GEMS-Rundung), und die vier Varianten lassen sich nicht unterscheiden. |
+| **Schluss** | Die Anfangschemie und die ersten 10 s der Kopplung von Riss und Matrix stimmen mit OGS überein. Der vorliegende Vergleich der Druckhöhe kann die Implementierungsvarianten nicht unterscheiden und bestätigt nicht, dass der Strömungsteil verifiziert ist (schlecht konditionierte Strömungsmatrix, Überschusswasser aus GEMS-Rundung). |
 | **Code und Lauf** | `GEMS_FEniCSx_OGS5_Template/cases/5_concretecrack`: `python run_case.py` (oder `Run.cmd`). Das ist die OGS-Vorlage, nicht der `case.yaml`-Code der Tutorials. |
 
 """,
@@ -420,7 +439,8 @@ CONCL['05_concretecrack'] = {
 **Not shown, or open**
 
 - The head: it is dominated by excess water from GEMS round-off and by an ill-conditioned flow matrix (conductivity contrast 8·10⁹;
-  reordering the same matrix alone changes the head by 7·10⁻⁶ m). A node-by-node comparison does not test the model here.
+  reordering the same matrix alone changes the head by 7·10⁻⁶ m). The current head comparison cannot distinguish the implementation variants
+  and does not confirm that the flow part is verified.
 - The FCT sign: OGS's non-conservative sign and the conservative textbook sign give differences smaller than the head noise, so this
   reference cannot decide between them. The template now uses the conservative sign by default.
 - Leaching: 10 s is far too short for any degradation; longer runs are not compared.
@@ -433,7 +453,7 @@ CONCL['05_concretecrack'] = {
 
 **没有说明的、或仍未解决的问题**
 
-- 水头：它主要由 GEMS 舍入误差产生的多余水和病态的流动矩阵决定（渗透系数之比 8·10⁹；仅把同一个矩阵换一种节点排序，水头就变化 7·10⁻⁶ m）。在这里逐节点比较水头检验不了模型。
+- 水头：它主要由 GEMS 舍入误差产生的多余水和病态的流动矩阵决定（渗透系数之比 8·10⁹；仅把同一个矩阵换一种节点排序，水头就变化 7·10⁻⁶ m）。当前水头比较不足以区分各实现方案，也不能确认流动部分已通过验证。
 - FCT 的符号：OGS 不守恒的符号和守恒的教科书符号带来的差异比水头噪声还小，所以这个参考无法区分两者。模板现在默认用守恒的符号。
 - 溶蚀：10 s 太短，看不到任何劣化；更长时间的计算没有对比。
 """,
@@ -447,9 +467,54 @@ CONCL['05_concretecrack'] = {
 **Nicht gezeigt oder offen**
 
 - Die Druckhöhe: Sie wird von Überschusswasser aus GEMS-Rundung und einer schlecht konditionierten Strömungsmatrix bestimmt (Leitfähigkeitskontrast 8·10⁹;
-  allein das Umsortieren derselben Matrix ändert die Druckhöhe um 7·10⁻⁶ m). Ein knotengenauer Vergleich prüft hier nicht das Modell.
+  allein das Umsortieren derselben Matrix ändert die Druckhöhe um 7·10⁻⁶ m). Der vorliegende Vergleich der Druckhöhe kann die Implementierungsvarianten nicht unterscheiden und bestätigt nicht, dass der Strömungsteil verifiziert ist.
 - Das FCT-Vorzeichen: Das nicht erhaltende Vorzeichen von OGS und das erhaltende Lehrbuchvorzeichen ergeben Unterschiede, die kleiner als das Rauschen der
   Druckhöhe sind; diese Referenz kann nicht zwischen ihnen entscheiden. Die Vorlage verwendet jetzt standardmäßig das erhaltende Vorzeichen.
 - Auslaugung: 10 s sind viel zu kurz für eine Degradation; längere Läufe werden nicht verglichen.
 """,
+}
+
+# ---------------------------------------------------------------- edits in the original notebook text
+EDITS = {}
+EDITS['03_opc_quartz'] = {
+'en': [(r"""reading at the first `#STOP`, so the column is closed.""", r"""reading at the first `#STOP`, so nothing crosses the boundaries."""),
+(r"""The column is closed and homogeneous: every node is the same batch reactor, and the
+four OGS monitoring nodes give identical results. Transport is still solved (and must not change anything).""",
+r"""Nothing crosses the boundaries and the column is homogeneous: every node is the same batch reactor, and the
+four OGS monitoring nodes give identical results. Transport is still solved (and must not change anything).
+The column is not a closed system, though: with `$FLAG_COUPLING_HYDROLOGY 0` OGS replaces the water consumed by
+reactions with pore water of the current composition, so the totals of H, O, Cl, Na and K increase. The template does
+the same (`hydrology='none'`).""")],
+'zh': [(r"""OGS 读到第一个 `#STOP` 就停，所以柱子是封闭的。""", r"""OGS 读到第一个 `#STOP` 就停，所以没有物质穿过边界。"""),
+(r"""柱子是封闭、均匀的：每个节点都是同样的
+批反应器，OGS 的 4 个监测节点结果完全相同。输运照样要算（而且不应改变任何东西）。""",
+r"""没有物质穿过边界，柱子是均匀的：每个节点都是同样的
+批反应器，OGS 的 4 个监测节点结果完全相同。输运照样要算（而且不应改变任何东西）。
+但柱子并不是封闭体系：在 `$FLAG_COUPLING_HYDROLOGY 0` 下，OGS 用当前组成的孔隙水补充反应消耗的水，
+因此 H、O、Cl、Na 和 K 的总量会增加。模板做同样的处理（`hydrology='none'`）。""")],
+'de': [(r"""ersten `#STOP` auf zu lesen, die Säule ist also geschlossen.""", r"""ersten `#STOP` auf zu lesen, über die Ränder gelangt also nichts."""),
+(r"""Die Säule ist geschlossen und homogen: jeder Knoten ist derselbe Batch-Reaktor, und die vier
+OGS-Beobachtungsknoten liefern identische Ergebnisse. Der Transport wird trotzdem gelöst (und darf nichts ändern).""",
+r"""Über die Ränder gelangt nichts, und die Säule ist homogen: jeder Knoten ist derselbe Batch-Reaktor, und die vier
+OGS-Beobachtungsknoten liefern identische Ergebnisse. Der Transport wird trotzdem gelöst (und darf nichts ändern).
+Ein geschlossenes System ist die Säule aber nicht: Mit `$FLAG_COUPLING_HYDROLOGY 0` ersetzt OGS das von Reaktionen
+verbrauchte Wasser durch Porenwasser der aktuellen Zusammensetzung, daher nehmen die Gesamtmengen von H, O, Cl, Na und K
+zu. Die Vorlage macht dasselbe (`hydrology='none'`).""")],
+}
+EDITS['04_comedy2d'] = {
+'en': [(r"""With `loose` the change pattern matches OGS node by node (Ca within $1.4\times10^{-4}$, head within $10^{-9}$); with `strict`""",
+r"""With `loose` the spatial pattern of the change matches OGS, and the state after 68 s agrees to $1.4\times10^{-4}$ in Ca and $10^{-9}$
+in head (maximum difference of the state divided by the maximum of the reference; this is not an error of the change itself); with `strict`""")],
+'zh': [(r"""用 `loose` 时变化的空间分布和 OGS 逐节点吻合（Ca 差 $1.4\times10^{-4}$ 以内，水头差 $10^{-9}$ 以内）；""",
+r"""用 `loose` 时变化量的空间分布与 OGS 一致，68 s 后的状态 Ca 差在 $1.4\times10^{-4}$ 以内、水头差在 $10^{-9}$ 以内（状态的最大差除以参考解的最大值，不是变化量本身的误差）；""")],
+'de': [(r"""Mit `loose` stimmt das Änderungsmuster Knoten für Knoten mit OGS überein (Ca innerhalb $1.4\times10^{-4}$, Druckhöhe innerhalb $10^{-9}$);""",
+r"""Mit `loose` entspricht das räumliche Muster der Änderung dem von OGS, und der Zustand nach 68 s stimmt in Ca auf $1.4\times10^{-4}$ und in der
+Druckhöhe auf $10^{-9}$ überein (größte Abweichung des Zustands, geteilt durch das Maximum der Referenz; kein Fehler der Änderung selbst);""")],
+}
+EDITS['05_concretecrack'] = {
+'en': [(r"""— a node-by-node head comparison is meaningless here.""",
+r"""— the current head comparison cannot distinguish the implementation variants and does not confirm that the flow part is verified.""")],
+'zh': [(r"""——这里逐节点比较水头没有意义。""", r"""——当前水头比较不足以区分各实现方案，也不能确认流动部分已通过验证。""")],
+'de': [(r"""— ein knotengenauer Vergleich der Druckhöhe ist hier sinnlos.""",
+r"""— der vorliegende Vergleich der Druckhöhe kann die Implementierungsvarianten nicht unterscheiden und bestätigt nicht, dass der Strömungsteil verifiziert ist.""")],
 }
