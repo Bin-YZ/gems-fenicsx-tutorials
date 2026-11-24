@@ -207,7 +207,8 @@ output:
   folder: results_noflux
 ```
 
-The notebook makes the change with `yaml` and runs to 100 000 s, long enough to see the column fill.
+The notebook makes the change with `yaml` and runs to 100 000 s; by then the closed end has reached about 0.9 mol/m³.
+Only four of the 20 saved profiles are plotted.
 """)
 nb.code(r"""
 import yaml
@@ -221,11 +222,13 @@ yaml.safe_dump(case, open('t01_tracer/case_noflux.yaml', 'w'), sort_keys=False)
 nb.code(r"""
 q = pd.read_csv('t01_tracer/results_noflux/profiles.csv')
 fig, ax = plt.subplots(figsize=(6.5, 3.4))
-for t, g in q[q.time_s > 0].groupby('time_s'):
-    ax.plot(g.x_m * 1e3, g.tracer_c_mol_m3_water, label=f'{t:.0f} s')
-ax.set_xlabel('x (mm)'); ax.set_ylabel('c (mol/m³ pore water)')
-ax.set_title('right boundary closed: the column fills up to c = 1')
-ax.legend(); plt.tight_layout(); plt.show()
+for t in (5000, 20000, 50000, 100000):              # a few of the 20 saved times
+    g = q[q.time_s == t]
+    ax.plot(g.x_m * 1e3, g.tracer_c_mol_m3_water, label=f'{t:,} s')
+ax.set_xlabel('x (mm)'); ax.set_ylabel('c (mol/m³ pore water)'); ax.set_ylim(0, 1.05)
+ax.set_title('right boundary closed: the column fills up towards c = 1')
+ax.legend(loc='lower left'); plt.tight_layout(); plt.show()
+print(f"c at the closed end: {q[q.time_s == 100000].tracer_c_mol_m3_water.iloc[-1]:.2f} mol/m3 after 100 000 s")
 """)
 
 nb.md(en=r"""

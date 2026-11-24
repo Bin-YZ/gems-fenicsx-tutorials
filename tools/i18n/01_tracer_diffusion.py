@@ -84,7 +84,7 @@ output:
   folder: results_noflux
 ```
 
-notebook 用 `yaml` 完成修改，并计算到 100 000 s，足够看到柱子被充满。
+notebook 用 `yaml` 完成修改，并计算到 100 000 s；此时封闭端已达到约 0.9 mol/m³。图中只画出保存的 20 条剖面中的 4 条。
 """,
 r"""
 ## 这篇教程说明了什么
@@ -194,7 +194,8 @@ output:
   folder: results_noflux
 ```
 
-Das Notebook nimmt die Änderung mit `yaml` vor und rechnet bis 100 000 s, lange genug, um die Säule sich füllen zu sehen.
+Das Notebook nimmt die Änderung mit `yaml` vor und rechnet bis 100 000 s; dann hat das geschlossene Ende etwa 0,9 mol/m³ erreicht.
+Gezeigt werden nur vier der 20 gespeicherten Profile.
 """,
 r"""
 ## Was dieses Tutorial zeigt
