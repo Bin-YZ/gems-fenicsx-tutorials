@@ -6,7 +6,7 @@ exclude_patterns: [_build, "**.ipynb_checkpoints"]
 execute:
   execute_notebooks: "off"
 parse:
-  myst_enable_extensions: [dollarmath, amsmath, colon_fence, deflist, html_image]
+  myst_enable_extensions: [dollarmath, amsmath, colon_fence, deflist, html_image, tasklist]
 html:
   use_repository_button: false
   use_issues_button: false

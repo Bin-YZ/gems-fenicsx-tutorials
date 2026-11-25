@@ -20,26 +20,55 @@ HEAD, CONCL, FIX = {}, {}, {}
 HEAD['01_hayekit'] = {
 'en': r"""# V1 · HAYEKIT: diffusion, precipitation and porosity feedback
 
+A and B **diffuse into a column from opposite ends**. Where they meet, **AB(s) precipitates at a kinetic rate**. The precipitate
+fills the pores, so **porosity and diffusivity decrease**.
+
 | | |
 |---|---|
-| **What is tested** | Kinetic precipitation of a mineral from two counter-diffusing solutes, with porosity and diffusivity feedback, using the OGS-GEM coupling rules (kinetic limits, restart initialisation, `hayekit` water scaling). |
-| **References** | (1) OGS5GEMDEV output `ab1d0100.vtk`: same mesh, same time step (100 s), t = 10 000 s. (2) The analytical solution of Hayek, Kosakowski & Churakov (2011) at t = 1000 s and 10 000 s. |
-| **Compared variables** | A, B (mol/m³ water), AB(s) and porosity at all 101 nodes. Error = max\|template − reference\| / max\|reference\|. |
-| **Result** | Against OGS (dt = 100 s): ≤ 3·10⁻⁵ for A, B and AB(s), 3·10⁻⁴ for porosity. Against the analytical solution (porosity at 10 000 s): 24 % with dt = 100 s (OGS and template), 0.3 % with 10 s and 2.7 % with 1 s (template only; OGS was not rerun with these steps). |
-| **Conclusion** | The template reproduces OGS for this case at the OGS time step. The template results are clearly sensitive to the time step, but the existing tests do not show that they converge to the analytical solution. |
-| **Code and run** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`: `python run_case.py` (or `Run.cmd`). This is the OGS template, not the `case.yaml` code of the tutorials. |
+| **Tested** | Kinetic mineral, porosity–diffusivity feedback, OGS-GEM coupling rules (kinetic limits, restart initialisation, `hayekit` water scaling) |
+| **References** | OGS5GEMDEV output `ab1d0100.vtk` (t = 10 000 s, dt = 100 s); analytical solution of Hayek et al. (2011) |
+| **Compared** | A, B, AB(s) and porosity at all 101 nodes |
+| **Error** | max\|template − reference\| / max\|reference\| |
+| **Code** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`: run `python run_case.py` (Windows: `Run.cmd`) |
+
+## Results
+
+- [x] **Agrees with OGS** (dt = 100 s): A, B, AB(s) ≤ 3·10⁻⁵, porosity 3·10⁻⁴.
+- [ ] **Convergence to the analytical solution not shown.** The result depends on the time step:
+
+| dt | porosity error at 10 000 s | computed with |
+|---|---|---|
+| 100 s | 24 % | OGS and template |
+| 10 s | 0.3 % | template only |
+| 1 s | 2.7 % | template only |
+
+This chapter uses the OGS template, not the `case.yaml` code of the tutorials.
 
 """,
 'zh': r"""# V1 · HAYEKIT：扩散、沉淀与孔隙率反馈
 
+A 和 B **从柱子两端相向扩散**，相遇处 **AB(s) 按动力学速率沉淀**。沉淀堵塞孔隙，**孔隙率和扩散系数随之下降**。
+
 | | |
 |---|---|
-| **检验什么** | 两种相向扩散的溶质按动力学速率沉淀为矿物，并带孔隙率和扩散系数反馈；使用 OGS-GEM 的耦合规则（动力学上下限、重启初始化、`hayekit` 水量缩放）。 |
-| **参考** | (1) OGS5GEMDEV 的输出 `ab1d0100.vtk`：相同网格、相同时间步（100 s），t = 10 000 s。(2) Hayek、Kosakowski 和 Churakov（2011）的解析解，t = 1000 s 和 10 000 s。 |
-| **比较的量** | 全部 101 个节点上的 A、B（mol/m³ 水）、AB(s) 和孔隙率。误差 = max\|模板 − 参考\| / max\|参考\|。 |
-| **结果** | 与 OGS 比（dt = 100 s）：A、B、AB(s) ≤ 3·10⁻⁵，孔隙率 3·10⁻⁴。与解析解比（10 000 s 时的孔隙率）：dt = 100 s 时差 24 %（OGS 和模板），10 s 时 0.3 %，1 s 时 2.7 %（只用模板算过；OGS 没有用这些时间步重算）。 |
-| **结论** | 在 OGS 的时间步下，模板复现了 OGS。模板结果对时间步明显敏感，但现有试验尚未证明其收敛到解析解。 |
-| **代码与运行** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`：`python run_case.py`（或 `Run.cmd`）。这是 OGS 模板，不是教程里的 `case.yaml` 代码。 |
+| **检验内容** | 动力学矿物、孔隙率–扩散系数反馈、OGS-GEM 耦合规则（动力学上下限、重启初始化、`hayekit` 水量缩放） |
+| **参考** | OGS5GEMDEV 输出 `ab1d0100.vtk`（t = 10 000 s，dt = 100 s）；Hayek 等（2011）的解析解 |
+| **比较的量** | 全部 101 个节点上的 A、B、AB(s) 和孔隙率 |
+| **误差** | max\|模板 − 参考\| / max\|参考\| |
+| **代码** | `GEMS_FEniCSx_OGS5_Template/cases/2_hayekit`：运行 `python run_case.py`（Windows：`Run.cmd`） |
+
+## 结果
+
+- [x] **与 OGS 一致**（dt = 100 s）：A、B、AB(s) ≤ 3·10⁻⁵，孔隙率 3·10⁻⁴。
+- [ ] **未证明收敛到解析解。** 结果随时间步变化：
+
+| dt | 10 000 s 时孔隙率误差 | 计算者 |
+|---|---|---|
+| 100 s | 24 % | OGS 和模板 |
+| 10 s | 0.3 % | 只有模板 |
+| 1 s | 2.7 % | 只有模板 |
+
+本章使用 OGS 模板，不是教程中的 `case.yaml` 代码。
 
 """,
 'de': r"""# V1 · HAYEKIT: Diffusion, Fällung und Porositätsrückkopplung
@@ -56,16 +85,20 @@ HEAD['01_hayekit'] = {
 """,
 }
 FIX['01_hayekit'] = {
-'en': (r"## Comparison with the analytical solution — the time step matters", r"""## Comparison with the analytical solution — the time step matters
+'en': (r"## Comparison with the analytical solution — the time step matters", r"""## Comparison with the analytical solution
 
-With the OGS time step (100 s), OGS and the template are both 24 % off the analytical porosity at $t = 10^4$ s. The smaller steps
-were run with the template only (OGS was not rerun): the error is 0.3 % with 10 s and 2.7 % with 1 s. The template results are
-therefore clearly sensitive to the time step, but the error does not decrease steadily, and these three runs do not show that the
-results converge to the analytical solution. One possible cause of the time-step sensitivity is the explicit treatment of the
-kinetics (the precipitation rate of each step is computed from the *previous* $\Omega$ and $\phi$); this has not been tested (see the conclusions)."""),
-'zh': (r"## 和解析解比较——时间步很关键", r"""## 和解析解比较——时间步很关键
+The porosity error **depends on the time step**: 24 % at 100 s, 0.3 % at 10 s, and 2.7 % again at 1 s.
+The error does not decrease steadily with dt, so **these runs do not show convergence** to the analytical solution.
 
-用 OGS 的时间步（100 s）时，OGS 和模板在 $t = 10^4$ s 的孔隙率都与解析解差 24 %。更小的时间步只用模板算过（OGS 没有重算）：10 s 时误差为 0.3 %，1 s 时为 2.7 %。因此模板结果对时间步明显敏感，但误差并不随时间步减小而单调下降，这三次计算尚未证明其收敛到解析解。时间步敏感的一个可能原因是动力学按显式处理（每一步的沉淀速率用的是 *上一步* 的 $\Omega$ 和 $\phi$），但这一点没有检验（见结论）。"""),
+- The 10 s and 1 s runs use the template only. OGS was not rerun.
+- Possible cause: explicit kinetics (the rate uses $\Omega$ and $\phi$ of the previous step). Not tested."""),
+'zh': (r"## 和解析解比较——时间步很关键", r"""## 与解析解比较
+
+孔隙率误差 **取决于时间步**：100 s 时 24 %，10 s 时 0.3 %，1 s 时又升到 2.7 %。
+误差不随 dt 单调减小，所以 **这些计算不能说明结果收敛到解析解**。
+
+- 10 s 和 1 s 只用模板算过，OGS 没有重算。
+- 可能的原因：动力学按显式处理（速率用上一步的 $\Omega$ 和 $\phi$）。未检验。"""),
 'de': (r"## Vergleich mit der analytischen Lösung — der Zeitschritt zählt", r"""## Vergleich mit der analytischen Lösung — der Zeitschritt zählt
 
 Mit dem OGS-Zeitschritt (100 s) liegen OGS und die Vorlage bei $t = 10^4$ s beide 24 % neben der analytischen Porosität. Die kleineren
@@ -77,32 +110,30 @@ wird aus dem *vorherigen* $\Omega$ und $\phi$ berechnet); das wurde nicht geprü
 CONCL['01_hayekit'] = {
 'en': r"""## Conclusions
 
-**Supported by this case**
+**Verified**
 
-- The template implements the OGS-GEM rules for a kinetic mineral (moving lower/upper limits, seeding, cold starts), the restart
-  initialisation, the `hayekit` water scaling and the porosity–diffusivity feedback as OGS does: the two codes agree to 10⁻⁵–10⁻⁴.
-- At the OGS time step (100 s) both codes have the same 24 % error against the analytical solution, so this error is not a difference between the codes.
+- [x] Kinetic mineral (moving limits, seeding, cold starts), restart initialisation, `hayekit` water scaling and
+  porosity–diffusivity feedback behave as in OGS: agreement 10⁻⁵–10⁻⁴.
+- [x] At dt = 100 s both codes have the same 24 % error against the analytical solution. The error is not a code difference.
 
-**Not shown, or open**
+**Not verified**
 
-- Convergence to the analytical solution: the template results are clearly sensitive to the time step (24 %, 0.3 %, 2.7 % with
-  100, 10, 1 s), but the existing tests do not show that they converge to the analytical solution. Explicit kinetics, the spatial
-  resolution, the non-reacting boundary nodes and the assumptions of the analytical solution are possible causes; none has been tested separately.
-- The smaller time steps were run with the template only; OGS was compared at 100 s only.
-- The case is 1D and has no flow.
+- [ ] Convergence to the analytical solution.
+- [ ] Agreement with OGS at smaller time steps.
+- [ ] 2D geometry and flow.
 """,
 'zh': r"""## 结论
 
-**这个算例支持的结论**
+**已验证**
 
-- 模板对动力学矿物（移动的上下限、成核种子、冷启动）、重启初始化、`hayekit` 水量缩放以及孔隙率–扩散系数反馈的处理与 OGS 一致：两个代码的结果吻合到 10⁻⁵–10⁻⁴。
-- 在 OGS 的时间步（100 s）下，两个代码相对解析解有相同的 24 % 误差，所以这个误差不是两个代码之间的差别。
+- [x] 动力学矿物（移动的上下限、成核种子、冷启动）、重启初始化、`hayekit` 水量缩放和孔隙率–扩散系数反馈与 OGS 一致，误差 10⁻⁵–10⁻⁴。
+- [x] dt = 100 s 时两个代码与解析解的误差相同（24 %）。这个误差不是代码之间的差别。
 
-**没有说明的、或仍未解决的问题**
+**未验证**
 
-- 是否收敛到解析解：模板结果对时间步明显敏感（100、10、1 s 时分别为 24 %、0.3 %、2.7 %），但现有试验尚未证明其收敛到解析解。显式动力学、空间分辨率、不参与反应的边界节点和解析解本身的假设都是可能的原因，都没有单独检验。
-- 更小的时间步只用模板算过；与 OGS 的比较只在 100 s 下进行。
-- 算例是一维的，没有水流。
+- [ ] 收敛到解析解。
+- [ ] 更小时间步下与 OGS 的一致性。
+- [ ] 二维几何和水流。
 """,
 'de': r"""## Schlussfolgerungen
 
@@ -517,4 +548,13 @@ r"""— the current head comparison cannot distinguish the implementation varian
 'zh': [(r"""——这里逐节点比较水头没有意义。""", r"""——当前水头比较不足以区分各实现方案，也不能确认流动部分已通过验证。""")],
 'de': [(r"""— ein knotengenauer Vergleich der Druckhöhe ist hier sinnlos.""",
 r"""— der vorliegende Vergleich der Druckhöhe kann die Implementierungsvarianten nicht unterscheiden und bestätigt nicht, dass der Strömungsteil verifiziert ist.""")],
+}
+
+EDITS['01_hayekit'] = {
+'en': [(r"""7. **Open question:** for $\Delta t \to 0$ the porosity still differs by about 3 % from the analytical
+   solution (spatial resolution? non-reacting boundary nodes? assumptions of the analytical solution?).""",
+r"""7. **Open:** the result depends on the time step; convergence to the analytical solution is not shown (see above).""")],
+'zh': [(r"""7. **没解决的问题：** $\Delta t \to 0$ 时孔隙率和解析解仍差约 3 %（空间分辨率？边界节点不反应？解析解的假设？）。""",
+r"""7. **未解决：** 结果随时间步变化，未证明收敛到解析解（见上）。""")],
+'de': [(r"""7. **Offene Frage:**""", r"""7. **Offene Frage:**""")],
 }
